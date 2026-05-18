@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: var(--glow-sm); }
+  50%       { box-shadow: var(--glow-lg); }
+}
+
+.node-glow-docker {
+  --glow-sm: 0 0 10px rgba(37,99,235,.35),  0 4px 14px rgba(37,99,235,.25);
+  --glow-lg: 0 0 22px rgba(37,99,235,.55),  0 4px 24px rgba(37,99,235,.4);
+  animation: glow-pulse 2.2s ease-in-out infinite;
+}
+
+.node-glow-k8s {
+  --glow-sm: 0 0 10px rgba(124,58,237,.35), 0 4px 14px rgba(124,58,237,.25);
+  --glow-lg: 0 0 22px rgba(124,58,237,.55), 0 4px 24px rgba(124,58,237,.4);
+  animation: glow-pulse 2.2s ease-in-out infinite;
+}
+
+.node-glow-production {
+  --glow-sm: 0 0 10px rgba(5,150,105,.35),  0 4px 14px rgba(5,150,105,.25);
+  --glow-lg: 0 0 22px rgba(5,150,105,.55),  0 4px 24px rgba(5,150,105,.4);
+  animation: glow-pulse 2.2s ease-in-out infinite;
+}
+
+.node-glow-done {
+  --glow-sm: 0 0 10px rgba(245,158,11,.4),  0 4px 14px rgba(239,68,68,.25);
+  --glow-lg: 0 0 22px rgba(245,158,11,.65), 0 4px 24px rgba(239,68,68,.45);
+  animation: glow-pulse 2.2s ease-in-out infinite;
+}
