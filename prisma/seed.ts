@@ -1,6 +1,23 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { LESSON_ENRICHMENT, MODULE_QUIZZES, type LessonEnrichment } from "./seedEnrichment";
+
+function applyEnrichment(content: string, enrichment: LessonEnrichment | undefined): string {
+  if (!enrichment) return content;
+  const objectives = [
+    "## Learning objectives",
+    "",
+    ...enrichment.objectives.map((o) => `- ${o}`),
+  ].join("\n");
+  const tryIt = `> Try it: ${enrichment.tryIt}`;
+  const takeaways = [
+    "## Key takeaways",
+    "",
+    ...enrichment.takeaways.map((t) => `- ${t}`),
+  ].join("\n");
+  return [objectives, content.trim(), tryIt, takeaways].join("\n\n");
+}
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
@@ -4155,10 +4172,14 @@ Quarterly DR drill checklist:
   ];
 
   for (const lesson of lessons) {
+    const enriched = {
+      ...lesson,
+      content: applyEnrichment(lesson.content, LESSON_ENRICHMENT[lesson.slug]),
+    };
     await prisma.lesson.upsert({
       where: { moduleId_slug: { moduleId: lesson.moduleId, slug: lesson.slug } },
-      update: {},
-      create: lesson,
+      update: { title: enriched.title, content: enriched.content, order: enriched.order },
+      create: enriched,
     });
   }
 
@@ -4183,9 +4204,37 @@ Quarterly DR drill checklist:
     if (!existing) await prisma.flashcard.create({ data: card });
   }
 
-  // Quiz for Docker Module 1
-  const existingQuiz = await prisma.quiz.findFirst({ where: { moduleId: dockerMod1.id } });
-  if (!existingQuiz) {
+  // ── Module quizzes ────────────────────────────────────────────
+  // The original "Getting Started with Docker — Quiz" is preserved as the
+  // quiz for the `getting-started` module so existing QuizResult rows keep
+  // pointing at a real Quiz. All other modules get a freshly seeded quiz.
+  const moduleBySlug: Record<string, { id: string }> = {
+    "getting-started": dockerMod1,
+    "images-and-containers": dockerMod2,
+    "docker-compose": dockerMod3,
+    "volumes-and-storage": dockerMod4,
+    "docker-networking": dockerMod5,
+    "multi-stage-builds": dockerMod6,
+    "docker-security": dockerMod7,
+    "debugging-containers": dockerMod8,
+    "docker-in-cicd": dockerMod9,
+    "docker-in-production": dockerMod10,
+    "pods-and-workloads": k8sMod1,
+    networking: k8sMod2,
+    "config-and-secrets": k8sMod3,
+    "persistent-storage": k8sMod4,
+    "scaling-and-hpa": k8sMod5,
+    "ingress-and-tls": k8sMod6,
+    "rbac-and-security": k8sMod7,
+    observability: k8sMod8,
+    helm: k8sMod9,
+    "production-operations": k8sMod10,
+  };
+
+  const existingDockerMod1Quiz = await prisma.quiz.findFirst({
+    where: { moduleId: dockerMod1.id },
+  });
+  if (!existingDockerMod1Quiz) {
     await prisma.quiz.create({
       data: {
         title: "Getting Started with Docker — Quiz",
@@ -4232,12 +4281,35 @@ Quarterly DR drill checklist:
     });
   }
 
+  let quizzesCreated = existingDockerMod1Quiz ? 0 : 1;
+  for (const quiz of MODULE_QUIZZES) {
+    const mod = moduleBySlug[quiz.moduleSlug];
+    if (!mod) {
+      console.warn(`  ⚠ Quiz references unknown module: ${quiz.moduleSlug}`);
+      continue;
+    }
+    const existing = await prisma.quiz.findFirst({
+      where: { moduleId: mod.id, title: quiz.title },
+    });
+    if (existing) continue;
+    await prisma.quiz.create({
+      data: {
+        title: quiz.title,
+        moduleId: mod.id,
+        questions: { create: quiz.questions },
+      },
+    });
+    quizzesCreated++;
+  }
+
+  const totalQuizzes = await prisma.quiz.count();
+
   console.log("✅ Seeding complete!");
   console.log(`  Courses: 2`);
   console.log(`  Modules: 20 (10 Docker + 10 K8s)`);
-  console.log(`  Lessons: ${lessons.length}`);
+  console.log(`  Lessons: ${lessons.length} (${Object.keys(LESSON_ENRICHMENT).length} enriched)`);
   console.log(`  Flashcards: ${flashcards.length}`);
-  console.log(`  Quizzes: 1`);
+  console.log(`  Quizzes: ${totalQuizzes} (created this run: ${quizzesCreated})`);
 }
 
 main()

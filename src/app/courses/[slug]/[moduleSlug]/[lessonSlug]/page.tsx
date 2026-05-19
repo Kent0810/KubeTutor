@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import LessonContent from "@/components/LessonContent";
+import LessonToc from "@/components/LessonToc";
+import ReadingProgress from "@/components/ReadingProgress";
 import { getSession } from "@/lib/auth";
 import { getTrackTheme, readingTime } from "@/lib/courseTheme";
+import { extractOutline, parseLessonContent } from "@/lib/lessonParser";
 import { prisma } from "@/lib/prisma";
 import LessonProgressButton from "./LessonProgressButton";
 
@@ -39,37 +42,54 @@ export default async function LessonViewerPage({ params }: LessonViewerPageProps
   const session = await getSession();
 
   const moduleRecord = await prisma.module.findFirst({
-    where: {
-      slug: moduleSlug,
-      course: { slug },
-    },
+    where: { slug: moduleSlug, course: { slug } },
     include: {
       course: true,
       lessons: { orderBy: { order: "asc" } },
     },
   });
-
   if (!moduleRecord) notFound();
 
-  const currentLessonIndex = moduleRecord.lessons.findIndex((lesson) => lesson.slug === lessonSlug);
+  const currentLessonIndex = moduleRecord.lessons.findIndex((l) => l.slug === lessonSlug);
   if (currentLessonIndex === -1) notFound();
 
   const lesson = moduleRecord.lessons[currentLessonIndex];
   const previousLesson = currentLessonIndex > 0 ? moduleRecord.lessons[currentLessonIndex - 1] : null;
-  const nextLesson = currentLessonIndex < moduleRecord.lessons.length - 1 ? moduleRecord.lessons[currentLessonIndex + 1] : null;
+  const nextLesson =
+    currentLessonIndex < moduleRecord.lessons.length - 1
+      ? moduleRecord.lessons[currentLessonIndex + 1]
+      : null;
   const theme = getTrackTheme(moduleRecord.course.slug);
 
-  const isCompleted = session
-    ? !!(await prisma.userProgress.findUnique({
-        where: { userId_lessonId: { userId: session.userId, lessonId: lesson.id } },
-        select: { completed: true },
-      }))?.completed
-    : false;
+  const outline = extractOutline(parseLessonContent(lesson.content));
+
+  // Completion progress for the whole module (logged-in users)
+  let isCompleted = false;
+  let completedIds = new Set<string>();
+  if (session) {
+    const progressRows = await prisma.userProgress.findMany({
+      where: {
+        userId: session.userId,
+        lessonId: { in: moduleRecord.lessons.map((l) => l.id) },
+        completed: true,
+      },
+      select: { lessonId: true },
+    });
+    completedIds = new Set(progressRows.map((p) => p.lessonId));
+    isCompleted = completedIds.has(lesson.id);
+  }
+
+  const totalLessonsInModule = moduleRecord.lessons.length;
+  const completedCount = completedIds.size;
+  const progressPct =
+    totalLessonsInModule > 0 ? Math.round((completedCount / totalLessonsInModule) * 100) : 0;
 
   return (
     <main className="flex-1 bg-slate-50">
+      <ReadingProgress color={theme.color} />
+
       <div className={`${theme.heroClass} text-white`}>
-        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
           <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm text-white/70">
             <Link href="/courses" className="transition hover:text-white">
               Courses
@@ -79,43 +99,105 @@ export default async function LessonViewerPage({ params }: LessonViewerPageProps
               {moduleRecord.course.title}
             </Link>
             <span>/</span>
-            <Link href={`/courses/${moduleRecord.course.slug}/${moduleRecord.slug}`} className="transition hover:text-white">
+            <Link
+              href={`/courses/${moduleRecord.course.slug}/${moduleRecord.slug}`}
+              className="transition hover:text-white"
+            >
               {moduleRecord.title}
             </Link>
             <span>/</span>
             <span className="font-medium text-white">{lesson.title}</span>
           </nav>
 
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <div className="mb-3 flex flex-wrap items-center gap-3">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="min-w-0 flex-1">
+              <div className="mb-3 flex flex-wrap items-center gap-2">
                 <span className="text-3xl">{theme.icon}</span>
                 <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wider">
-                  Lesson {lesson.order}
+                  Lesson {lesson.order} of {totalLessonsInModule}
                 </span>
                 <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium">
                   ⏱ {readingTime(lesson.content)}
                 </span>
-                <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium">{theme.label}</span>
+                <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium">
+                  {theme.label}
+                </span>
+                {isCompleted ? (
+                  <span className="rounded-full bg-emerald-400/20 px-3 py-1 text-xs font-semibold text-emerald-100">
+                    ✓ Completed
+                  </span>
+                ) : null}
               </div>
-              <h1 className="text-3xl font-extrabold sm:text-4xl">{lesson.title}</h1>
-            </div>
-            <div className="sm:hidden">
-              <a
-                href="#lesson-progress"
-                className="inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
-              >
-                Track progress ↓
-              </a>
+              <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl">{lesson.title}</h1>
+
+              {session ? (
+                <div className="mt-5 max-w-lg">
+                  <div className="mb-1.5 flex items-center justify-between text-xs text-white/80">
+                    <span>Module progress</span>
+                    <span className="font-semibold">
+                      {completedCount} / {totalLessonsInModule} lessons
+                    </span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-white/15">
+                    <div
+                      className="h-full rounded-full bg-white transition-all"
+                      style={{ width: `${progressPct}%` }}
+                    />
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-col-reverse gap-8 lg:flex-row lg:items-start">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
+          {/* Left: module lesson list */}
+          <aside className="lg:w-64 lg:shrink-0">
+            <div className="sticky top-20 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+              <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                Module
+              </p>
+              <p className="mb-4 text-sm font-semibold text-slate-900">{moduleRecord.title}</p>
+              <ul className="space-y-1">
+                {moduleRecord.lessons.map((listedLesson) => {
+                  const isCurrent = listedLesson.slug === lessonSlug;
+                  const done = completedIds.has(listedLesson.id);
+                  return (
+                    <li key={listedLesson.id}>
+                      <Link
+                        href={`/courses/${moduleRecord.course.slug}/${moduleRecord.slug}/${listedLesson.slug}`}
+                        className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
+                          isCurrent
+                            ? "font-bold text-white shadow-sm"
+                            : "text-slate-600 hover:bg-slate-50"
+                        }`}
+                        style={isCurrent ? { backgroundColor: theme.color } : undefined}
+                      >
+                        <span
+                          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+                            isCurrent
+                              ? "bg-white/25 text-white"
+                              : done
+                                ? "bg-emerald-100 text-emerald-700"
+                                : "bg-slate-100 text-slate-500"
+                          }`}
+                        >
+                          {done && !isCurrent ? "✓" : listedLesson.order}
+                        </span>
+                        <span className="min-w-0 truncate">{listedLesson.title}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </aside>
+
+          {/* Center: lesson body */}
           <article className="min-w-0 flex-1">
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm lg:p-10">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
               <LessonContent content={lesson.content} trackColor={theme.color} />
             </div>
 
@@ -187,38 +269,14 @@ export default async function LessonViewerPage({ params }: LessonViewerPageProps
             </div>
           </article>
 
-          <aside className="lg:w-72 lg:shrink-0">
-            <div className="sticky top-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-              <p className="mb-2 text-xs font-bold uppercase tracking-widest text-slate-400">{moduleRecord.title}</p>
-              <p className="mb-4 text-sm text-slate-500">Jump to any lesson in this module.</p>
-              <ul className="space-y-1">
-                {moduleRecord.lessons.map((listedLesson) => {
-                  const isCurrent = listedLesson.slug === lessonSlug;
-
-                  return (
-                    <li key={listedLesson.id}>
-                      <Link
-                        href={`/courses/${moduleRecord.course.slug}/${moduleRecord.slug}/${listedLesson.slug}`}
-                        className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
-                          isCurrent ? "font-bold text-white" : "text-slate-600 hover:bg-slate-50"
-                        }`}
-                        style={isCurrent ? { backgroundColor: theme.color } : undefined}
-                      >
-                        <span
-                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                            isCurrent ? "bg-white/30 text-white" : "bg-slate-100 text-slate-500"
-                          }`}
-                        >
-                          {listedLesson.order}
-                        </span>
-                        <span className="min-w-0 truncate">{listedLesson.title}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </aside>
+          {/* Right: table of contents */}
+          {outline.length > 0 ? (
+            <aside className="lg:w-60 lg:shrink-0">
+              <div className="sticky top-20 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                <LessonToc outline={outline} trackColor={theme.color} />
+              </div>
+            </aside>
+          ) : null}
         </div>
       </div>
     </main>

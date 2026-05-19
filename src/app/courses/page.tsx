@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import CoursesBrowser, { type CourseCardData } from "@/components/CoursesBrowser";
 import { prisma } from "@/lib/prisma";
-import { getTrackTheme, totalLessons } from "@/lib/courseTheme";
 
 export const metadata: Metadata = {
   title: "KubeTutor | Courses",
@@ -10,98 +9,103 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+const HIGHLIGHTS: Record<string, string[]> = {
+  "docker-foundations": [
+    "Container fundamentals",
+    "Production Dockerfiles",
+    "Compose multi-service stacks",
+    "Image security & scanning",
+    "CI/CD with images",
+  ],
+  "kubernetes-essentials": [
+    "Pods & Deployments",
+    "Services & Ingress",
+    "ConfigMaps & Secrets",
+    "Autoscaling (HPA/VPA)",
+    "Observability & Helm",
+  ],
+};
+
 export default async function CoursesPage() {
   const courses = await prisma.course.findMany({
     include: {
       modules: {
         select: {
           slug: true,
-          _count: {
-            select: { lessons: true },
-          },
+          title: true,
+          order: true,
+          _count: { select: { lessons: true } },
         },
         orderBy: { order: "asc" },
       },
-      _count: {
-        select: { modules: true },
-      },
+      _count: { select: { modules: true } },
     },
     orderBy: { order: "asc" },
   });
 
+  const cards: CourseCardData[] = courses.map((course) => {
+    const lessonCount = course.modules.reduce((s, m) => s + m._count.lessons, 0);
+    return {
+      id: course.id,
+      slug: course.slug,
+      title: course.title,
+      description: course.description,
+      moduleCount: course._count.modules,
+      lessonCount,
+      firstModuleSlug: course.modules[0]?.slug,
+      modulePreview: course.modules.slice(0, 4).map((m) => ({
+        slug: m.slug,
+        title: m.title,
+        lessonCount: m._count.lessons,
+      })),
+      highlights: HIGHLIGHTS[course.slug] ?? [],
+    };
+  });
+
+  const totalLessons = cards.reduce((s, c) => s + c.lessonCount, 0);
+  const totalModules = cards.reduce((s, c) => s + c.moduleCount, 0);
+
   return (
     <main className="flex-1 bg-slate-50">
-      <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">Learning Library</p>
-            <h1 className="mt-4 text-4xl font-extrabold sm:text-5xl">Choose your next platform skill track</h1>
-            <p className="mt-4 text-base leading-8 text-slate-300 sm:text-lg">
-              Build hands-on Docker and Kubernetes knowledge through guided modules, structured lessons,
-              and clear next steps.
-            </p>
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white">
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 20% 30%, rgba(34,211,238,0.4), transparent 40%), radial-gradient(circle at 80% 70%, rgba(168,85,247,0.4), transparent 40%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-300">
+            Learning Library
+          </p>
+          <h1 className="mt-4 max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">
+            Choose your next platform skill track
+          </h1>
+          <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+            Build production-grade Docker and Kubernetes knowledge through guided modules, hands-on
+            examples, and battle-tested patterns from real platform teams.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3 text-sm">
+            <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-semibold">
+              {cards.length} tracks
+            </span>
+            <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-semibold">
+              {totalModules} modules
+            </span>
+            <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-semibold">
+              {totalLessons} in-depth lessons
+            </span>
+            <span className="rounded-full border border-emerald-300/40 bg-emerald-400/15 px-4 py-1.5 font-semibold text-emerald-100">
+              Free during beta
+            </span>
           </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-2">
-          {courses.map((course) => {
-            const theme = getTrackTheme(course.slug);
-            const lessonCount = totalLessons(course.modules);
-            const firstModule = course.modules[0];
-
-            return (
-              <article
-                key={course.id}
-                className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
-              >
-                <div className={`h-2 ${theme.heroClass}`} />
-                <div className="p-8">
-                  <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="flex items-start gap-4">
-                      <span className="text-4xl">{theme.icon}</span>
-                      <div>
-                        <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${theme.badgeClass}`}>
-                          {theme.label}
-                        </span>
-                        <h2 className="mt-4 text-2xl font-bold text-slate-900">{course.title}</h2>
-                        <p className="mt-3 text-base leading-7 text-slate-600">{course.description}</p>
-                      </div>
-                    </div>
-                    <span className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${theme.badgeClass}`}>
-                      {lessonCount} lessons
-                    </span>
-                  </div>
-
-                  <div className="mt-6 flex flex-wrap gap-3 text-sm">
-                    <span className="rounded-full bg-slate-100 px-3 py-1 font-medium text-slate-700">
-                      {course._count.modules} modules
-                    </span>
-                    <span className={`rounded-full px-3 py-1 font-medium ${theme.mutedBadgeClass}`}>
-                      {lessonCount} lessons
-                    </span>
-                  </div>
-
-                  <div className="mt-8 flex flex-wrap gap-3">
-                    <Link
-                      href={`/courses/${course.slug}`}
-                      className={`inline-flex rounded-full px-5 py-3 text-sm font-semibold shadow-sm transition ${theme.buttonClass}`}
-                    >
-                      Explore course
-                    </Link>
-                    <Link
-                      href={firstModule ? `/courses/${course.slug}/${firstModule.slug}` : `/courses/${course.slug}`}
-                      className="inline-flex rounded-full border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-                    >
-                      Start first module
-                    </Link>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+        <CoursesBrowser courses={cards} />
       </section>
     </main>
   );
