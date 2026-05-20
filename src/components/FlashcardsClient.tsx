@@ -39,7 +39,7 @@ export default function FlashcardsClient({ flashcards }: FlashcardsClientProps) 
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap gap-3">
-        {topics.map((topic) => {
+        {topics.map((topic, i) => {
           const active = topic === selectedTopic;
 
           return (
@@ -47,11 +47,12 @@ export default function FlashcardsClient({ flashcards }: FlashcardsClientProps) 
               key={topic}
               type="button"
               onClick={() => setSelectedTopic(topic)}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+              className={`animate-fade-in-up rounded-full px-4 py-2 text-sm font-semibold transition hover:scale-105 active:scale-95 ${
                 active
                   ? "bg-blue-600 text-white shadow-sm"
                   : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
               }`}
+              style={{ animationDelay: `${i * 50}ms` }}
             >
               {topic}
             </button>
@@ -60,7 +61,7 @@ export default function FlashcardsClient({ flashcards }: FlashcardsClientProps) 
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {filteredFlashcards.map((card) => {
+        {filteredFlashcards.map((card, i) => {
           const isFlipped = flippedIds.includes(card.id);
 
           return (
@@ -68,7 +69,8 @@ export default function FlashcardsClient({ flashcards }: FlashcardsClientProps) 
               key={card.id}
               type="button"
               onClick={() => toggleCard(card.id)}
-              className="group h-64 cursor-pointer rounded-3xl text-left [perspective:1200px]"
+              className="animate-fade-in-up group h-64 cursor-pointer rounded-3xl text-left [perspective:1200px]"
+              style={{ animationDelay: `${i * 60}ms` }}
             >
               <div
                 className="relative h-full rounded-3xl transition duration-500"

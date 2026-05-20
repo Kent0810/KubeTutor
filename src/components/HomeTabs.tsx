@@ -1,7 +1,20 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import SkillTree from "./SkillTree";
+
+/* Map the first gradient color token to a hex value for CSS custom property */
+const gradColorMap: Record<string, string> = {
+  "cyan-500": "#06b6d4", "violet-500": "#8b5cf6", "sky-500": "#0ea5e9",
+  "lime-500": "#84cc16", "orange-500": "#f97316", "yellow-400": "#facc15",
+  "amber-400": "#fbbf24", "teal-500": "#14b8a6", "green-500": "#22c55e",
+  "blue-500": "#3b82f6", "purple-500": "#a855f7", "rose-500": "#f43f5e",
+  "indigo-500": "#6366f1", "emerald-500": "#10b981",
+};
+function tipAccentColor(grad: string): string {
+  const token = grad.replace(/^from-/, "").split(" ")[0];
+  return gradColorMap[token] ?? "#3b82f6";
+}
 
 /* ── Data ───────────────────────────────────────────────────────── */
 const commonProblems = [
@@ -298,6 +311,12 @@ function TipModal({
 }) {
   const tip = tips[idx];
 
+  // Lock body scroll
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "ArrowRight" || e.key === "ArrowDown") {
@@ -318,7 +337,8 @@ function TipModal({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-2xl"
+        className="animate-scale-in relative flex w-full max-w-2xl flex-col rounded-3xl bg-white shadow-2xl"
+        style={{ maxHeight: "min(90vh, 720px)" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Gradient header */}
@@ -336,8 +356,8 @@ function TipModal({
           </span>
         </div>
 
-        {/* Body */}
-        <div className="max-h-[60vh] overflow-y-auto px-6 py-5">
+        {/* Body — scrolls independently, header/footer stay fixed */}
+        <div className="modal-scroll min-h-0 flex-1 overflow-y-auto px-6 py-5">
           <p className="mb-3 text-sm leading-6 font-semibold text-slate-800">{tip.body}</p>
           <div className="space-y-1">
             {tip.detail.split("\n").map((line, i) => {
@@ -419,8 +439,16 @@ export default function HomeTabs() {
   const [selectedTipIdx, setSelectedTipIdx] = useState<number | null>(null);
   const [query, setQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [tagFilter, setTagFilter] = useState<"all" | "Kubernetes" | "Docker">("all");
+  const [copiedFix, setCopiedFix] = useState<string | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const activeTab = TABS.find((t) => t.id === active)!;
+
+  const copyFix = useCallback((text: string) => {
+    navigator.clipboard.writeText(text).catch(() => {});
+    setCopiedFix(text);
+    setTimeout(() => setCopiedFix(null), 2000);
+  }, []);
 
   // Close suggestions on outside click
   useEffect(() => {
@@ -433,15 +461,17 @@ export default function HomeTabs() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const filteredProblems = query.trim()
-    ? commonProblems.filter(
-        (p) =>
-          p.title.toLowerCase().includes(query.toLowerCase()) ||
-          p.tag.toLowerCase().includes(query.toLowerCase()) ||
-          p.cause.toLowerCase().includes(query.toLowerCase()) ||
-          p.fix.toLowerCase().includes(query.toLowerCase())
-      )
-    : commonProblems;
+  const filteredProblems = (
+    query.trim()
+      ? commonProblems.filter(
+          (p) =>
+            p.title.toLowerCase().includes(query.toLowerCase()) ||
+            p.tag.toLowerCase().includes(query.toLowerCase()) ||
+            p.cause.toLowerCase().includes(query.toLowerCase()) ||
+            p.fix.toLowerCase().includes(query.toLowerCase())
+        )
+      : commonProblems
+  ).filter((p) => tagFilter === "all" || p.tag === tagFilter);
 
   const suggestions = query.trim()
     ? [
@@ -465,28 +495,38 @@ export default function HomeTabs() {
     : [];
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-      {/* Tab bar */}
-      <div className="flex border-b border-slate-100 bg-slate-50">
+    <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
+      {/* ── Premium Tab bar ───────────────────────────────── */}
+      <div className="flex border-b border-slate-100 bg-slate-50 px-4 pt-4 gap-2 sm:gap-3">
         {TABS.map((tab) => {
           const isActive = tab.id === active;
           return (
             <button
               key={tab.id}
               onClick={() => setActive(tab.id)}
-              className={`relative flex flex-1 flex-col items-center gap-0.5 px-3 py-4 text-center transition-all duration-200 ${isActive ? "bg-white text-slate-900" : "text-slate-500 hover:bg-white/60 hover:text-slate-700"}`}
+              className={`relative flex flex-1 flex-col items-center gap-1.5 rounded-t-2xl px-3 py-4 text-center transition-all duration-200 sm:px-4 ${
+                isActive
+                  ? "bg-white text-slate-900 shadow-[0_-1px_8px_rgba(0,0,0,0.06)] ring-1 ring-slate-200/80 ring-b-0"
+                  : "text-slate-500 hover:bg-white/70 hover:text-slate-700"
+              }`}
             >
-              {/* Active bottom border */}
+              {/* Active gradient bottom bar hidden — we use border-bottom trick */}
               {isActive && (
                 <span
-                  className={`absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r ${tab.activeGrad}`}
+                  className={`absolute inset-x-4 -bottom-px h-0.5 rounded-full bg-gradient-to-r ${tab.activeGrad}`}
                 />
               )}
-              <span className="relative text-xl">{tab.icon}</span>
-              <span className="relative text-sm leading-tight font-bold">{tab.label}</span>
+              <span className={`text-2xl transition-transform duration-200 ${isActive ? "scale-110" : ""}`}>
+                {tab.icon}
+              </span>
               <span
-                className={`relative text-[10px] leading-tight ${isActive ? "text-slate-400" : "text-slate-400"}`}
+                className={`text-xs font-extrabold leading-tight transition-all duration-200 ${
+                  isActive ? `bg-gradient-to-r ${tab.activeGrad} bg-clip-text text-transparent` : ""
+                }`}
               >
+                {tab.label}
+              </span>
+              <span className="hidden text-[10px] leading-tight text-slate-400 sm:block">
                 {tab.desc}
               </span>
             </button>
@@ -494,21 +534,61 @@ export default function HomeTabs() {
         })}
       </div>
 
-      {/* Section heading */}
-      <div className="px-6 pt-8 pb-2 text-center">
-        <h2
-          className={`bg-gradient-to-r text-2xl font-extrabold ${activeTab.activeGrad} bg-clip-text text-transparent`}
-        >
-          {activeTab.icon} {activeTab.label}
-        </h2>
-      </div>
-
       {/* Tab content */}
-      <div className="px-4 pt-4 pb-8 sm:px-6 lg:px-8">
+      <div key={active} className="animate-tab-in px-4 pt-4 pb-8 sm:px-6 lg:px-8">
         {active === "roadmap" && <SkillTree />}
 
         {active === "problems" && (
           <div>
+            {/* Category filter chips */}
+            <div className="mb-5 flex flex-wrap gap-2">
+              {(
+                [
+                  { id: "all", label: "All Problems", count: commonProblems.length },
+                  {
+                    id: "Kubernetes",
+                    label: "☸️ Kubernetes",
+                    count: commonProblems.filter((p) => p.tag === "Kubernetes").length,
+                  },
+                  {
+                    id: "Docker",
+                    label: "🐳 Docker",
+                    count: commonProblems.filter((p) => p.tag === "Docker").length,
+                  },
+                ] as const
+              ).map((chip) => {
+                const isChipActive = tagFilter === chip.id;
+                const chipColor =
+                  chip.id === "Kubernetes"
+                    ? isChipActive
+                      ? "bg-violet-600 text-white shadow-sm border-violet-600"
+                      : "border-violet-200 text-violet-600 hover:bg-violet-50"
+                    : chip.id === "Docker"
+                      ? isChipActive
+                        ? "bg-blue-600 text-white shadow-sm border-blue-600"
+                        : "border-blue-200 text-blue-600 hover:bg-blue-50"
+                      : isChipActive
+                        ? "bg-slate-900 text-white shadow-sm border-slate-900"
+                        : "border-slate-200 text-slate-600 hover:bg-slate-50";
+                return (
+                  <button
+                    key={chip.id}
+                    onClick={() => setTagFilter(chip.id)}
+                    className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-bold transition-all duration-150 ${chipColor}`}
+                  >
+                    {chip.label}
+                    <span
+                      className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                        isChipActive ? "bg-white/20" : "bg-slate-100 text-slate-500"
+                      }`}
+                    >
+                      {chip.count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
             {/* Search bar */}
             <div ref={searchRef} className="relative mb-6">
               <div className="relative">
@@ -602,29 +682,68 @@ export default function HomeTabs() {
             {/* Results grid */}
             {filteredProblems.length > 0 ? (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredProblems.map((p) => (
+                {filteredProblems.map((p, i) => (
                   <div
                     key={p.title}
-                    className="flex flex-col gap-3 rounded-2xl border bg-white p-5 shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md"
-                    style={{ borderColor: p.tagColor + "44" }}
+                    className="animate-fade-in-up group relative flex flex-col gap-3 overflow-hidden rounded-2xl border bg-white p-5 pt-6 shadow-sm transition-all duration-200 hover:-translate-y-2 hover:shadow-xl"
+                    style={{
+                      borderColor: p.tagColor + "44",
+                      animationDelay: `${i * 60}ms`,
+                    }}
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl">{p.icon}</span>
+                    {/* Colored top accent bar — always visible, grows on hover */}
+                    <div
+                      className="absolute inset-x-0 top-0 h-1 rounded-t-2xl transition-all duration-200 group-hover:h-1.5"
+                      style={{ background: p.tagColor }}
+                    />
+                    {/* Colored background wash — fades in on hover */}
+                    <div
+                      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                      style={{ background: p.tagColor + "08" }}
+                    />
+
+                    <div className="relative flex items-center gap-2">
+                      <span className="text-2xl transition-transform duration-200 group-hover:scale-125">
+                        {p.icon}
+                      </span>
                       <span
-                        className="rounded-full px-2 py-0.5 text-[10px] font-extrabold tracking-widest uppercase"
+                        className="rounded-full px-2 py-0.5 text-[10px] font-extrabold tracking-widest uppercase transition-all duration-200 group-hover:opacity-100"
                         style={{ background: p.tagColor + "18", color: p.tagColor }}
                       >
                         {p.tag}
                       </span>
                     </div>
-                    <h3 className="text-sm font-extrabold text-slate-900">{p.title}</h3>
-                    <p className="text-xs leading-5 text-slate-500">{p.cause}</p>
-                    <p
-                      className="mt-auto rounded-xl bg-slate-900 px-3 py-2 font-mono text-xs leading-5 text-green-700"
-                      style={{ borderLeft: `3px solid ${p.tagColor}` }}
+                    <h3
+                      className="relative text-sm font-extrabold text-slate-900 transition-colors duration-200 group-hover:text-slate-800"
+                      style={{ color: undefined }}
                     >
-                      {p.fix}
-                    </p>
+                      {p.title}
+                    </h3>
+                    <p className="relative text-xs leading-5 text-slate-500">{p.cause}</p>
+                    <div className="relative mt-auto">
+                      <pre
+                        className="rounded-xl bg-slate-900 px-3 py-2.5 font-mono text-xs leading-5 text-green-400 transition-all duration-200 group-hover:bg-slate-800 whitespace-pre-wrap break-all pr-10"
+                        style={{ borderLeft: `3px solid ${p.tagColor}` }}
+                      >
+                        {p.fix}
+                      </pre>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); copyFix(p.fix); }}
+                        title="Copy command"
+                        className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-md bg-white/10 text-slate-400 transition hover:bg-white/20 hover:text-white"
+                      >
+                        {copiedFix === p.fix ? (
+                          <svg className="h-3.5 w-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -661,23 +780,39 @@ export default function HomeTabs() {
               <button
                 key={tip.title}
                 onClick={() => setSelectedTipIdx(i)}
-                className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-white p-5 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-200 hover:shadow-md"
+                className="tip-card animate-fade-in-up group relative overflow-hidden rounded-2xl border border-slate-100 bg-white p-5 text-left shadow-sm transition-all duration-200 hover:-translate-y-2 hover:shadow-xl"
+                style={{
+                  animationDelay: `${i * 55}ms`,
+                  ["--tip-color" as string]: tipAccentColor(tip.grad),
+                }}
               >
-                {/* Gradient accent corner */}
+                {/* Full card gradient wash — invisible until hover */}
                 <div
-                  className={`absolute -top-6 -right-6 h-20 w-20 rounded-full bg-gradient-to-br opacity-15 ${tip.grad} blur-xl transition-opacity group-hover:opacity-30`}
+                  className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${tip.grad} opacity-0 transition-opacity duration-300 group-hover:opacity-[0.07]`}
+                />
+                {/* Colored top accent bar */}
+                <div
+                  className={`absolute inset-x-0 top-0 h-0.5 rounded-t-2xl bg-gradient-to-r ${tip.grad} opacity-0 transition-all duration-200 group-hover:h-1 group-hover:opacity-100`}
+                />
+                {/* Gradient blob — expands on hover */}
+                <div
+                  className={`absolute -top-8 -right-8 h-28 w-28 rounded-full bg-gradient-to-br opacity-10 ${tip.grad} blur-xl transition-all duration-300 group-hover:h-44 group-hover:w-44 group-hover:opacity-30`}
                 />
                 <div
-                  className={`mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${tip.grad} text-xl shadow`}
+                  className={`relative mb-3 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${tip.grad} text-xl shadow transition-all duration-200 group-hover:scale-110 group-hover:shadow-lg`}
                 >
                   {tip.icon}
                 </div>
-                <h3 className="text-sm font-extrabold text-slate-900">{tip.title}</h3>
-                <p className="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">{tip.body}</p>
-                <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-slate-400 group-hover:text-slate-600">
+                <h3 className="tip-title relative text-sm font-extrabold text-slate-900 transition-colors duration-200">
+                  {tip.title}
+                </h3>
+                <p className="relative mt-2 line-clamp-2 text-xs leading-5 text-slate-500">
+                  {tip.body}
+                </p>
+                <span className="relative mt-3 inline-flex items-center gap-1 text-xs font-semibold text-slate-400 transition-all duration-150 group-hover:gap-2 group-hover:text-slate-700">
                   Read more
                   <svg
-                    className="h-3 w-3"
+                    className="h-3 w-3 transition-transform duration-150 group-hover:translate-x-0.5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"

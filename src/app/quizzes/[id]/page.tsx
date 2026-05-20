@@ -34,7 +34,7 @@ export default async function QuizPage({ params }: QuizPageProps) {
   return (
     <main className="flex-1 bg-gray-50">
       <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-        <nav className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+        <nav className="animate-slide-in-left flex flex-wrap items-center gap-2 text-sm text-slate-500">
           <Link href="/quizzes" className="font-medium hover:text-blue-600">
             Quizzes
           </Link>
@@ -42,7 +42,7 @@ export default async function QuizPage({ params }: QuizPageProps) {
           <span className="font-semibold text-slate-900">{quiz.title}</span>
         </nav>
 
-        <div className="mt-6 rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
+        <div className="animate-fade-in-up delay-100 mt-6 rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
           <p className="text-xs font-semibold tracking-[0.2em] text-blue-300 uppercase">
             {quiz.module.course.title} · {quiz.module.title}
           </p>
@@ -52,7 +52,7 @@ export default async function QuizPage({ params }: QuizPageProps) {
           </p>
         </div>
 
-        <div className="mt-8">
+        <div className="animate-fade-in-up delay-200 mt-8">
           <QuizClient
             quizId={quiz.id}
             questions={quiz.questions.map((q) => ({

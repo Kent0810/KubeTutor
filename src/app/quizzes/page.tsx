@@ -23,9 +23,9 @@ export default async function QuizzesPage() {
     <main className="flex-1 bg-gray-50">
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
-          <p className="text-sm font-semibold tracking-[0.2em] text-blue-600 uppercase">Practice</p>
-          <h1 className="mt-3 text-4xl font-bold text-slate-900">Quizzes</h1>
-          <p className="mt-4 text-base leading-7 text-slate-600">
+          <p className="animate-slide-in-left text-sm font-semibold tracking-[0.2em] text-blue-600 uppercase">Practice</p>
+          <h1 className="animate-fade-in-up delay-100 mt-3 text-4xl font-bold text-slate-900">Quizzes</h1>
+          <p className="animate-fade-in-up delay-200 mt-4 text-base leading-7 text-slate-600">
             Test your understanding with module-based multiple-choice quizzes.
           </p>
         </div>
@@ -46,13 +46,14 @@ export default async function QuizzesPage() {
           </div>
         ) : (
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
-            {quizzes.map((quiz) => {
+            {quizzes.map((quiz, i) => {
               if (!quiz.module) return null;
 
               return (
                 <article
                   key={quiz.id}
-                  className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                  className="animate-fade-in-up rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:border-blue-200"
+                  style={{ animationDelay: `${i * 100}ms` }}
                 >
                   <p className="text-xs font-semibold tracking-[0.2em] text-blue-600 uppercase">
                     {quiz.module.course.title} · {quiz.module.title}

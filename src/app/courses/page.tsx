@@ -77,27 +77,27 @@ export default async function CoursesPage() {
           }}
         />
         <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <p className="text-sm font-semibold tracking-[0.3em] text-cyan-300 uppercase">
+          <p className="animate-slide-in-left text-sm font-semibold tracking-[0.3em] text-cyan-300 uppercase">
             Learning Library
           </p>
-          <h1 className="mt-4 max-w-3xl text-4xl leading-tight font-extrabold sm:text-5xl">
+          <h1 className="animate-fade-in-up delay-100 mt-4 max-w-3xl text-4xl leading-tight font-extrabold sm:text-5xl">
             Choose your next platform skill track
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+          <p className="animate-fade-in-up delay-200 mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
             Build production-grade Docker and Kubernetes knowledge through guided modules, hands-on
             examples, and battle-tested patterns from real platform teams.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3 text-sm">
-            <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-semibold">
+          <div className="animate-fade-in-up delay-300 mt-8 flex flex-wrap gap-3 text-sm">
+            <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-semibold transition hover:bg-white/20">
               {cards.length} tracks
             </span>
-            <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-semibold">
+            <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-semibold transition hover:bg-white/20">
               {totalModules} modules
             </span>
-            <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-semibold">
+            <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-semibold transition hover:bg-white/20">
               {totalLessons} in-depth lessons
             </span>
-            <span className="rounded-full border border-emerald-300/40 bg-emerald-400/15 px-4 py-1.5 font-semibold text-emerald-100">
+            <span className="rounded-full border border-emerald-300/40 bg-emerald-400/15 px-4 py-1.5 font-semibold text-emerald-100 transition hover:bg-emerald-400/25">
               Free during beta
             </span>
           </div>

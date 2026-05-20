@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 /* ── Canvas ─────────────────────────────────────────────────────── */
-const W = 800;
-const H = 1260;
-const NW = 158;
-const NH = 56;
+const W = 1120;
+const H = 1792;
+const NW = 238;
+const NH = 90;
 
 /* ── Types ──────────────────────────────────────────────────────── */
 type Track = "docker" | "k8s" | "production";
@@ -33,8 +33,8 @@ const NODES: SkillNode[] = [
     label: "Docker CLI",
     sublabel: "run · exec · logs · inspect",
     track: "docker",
-    cx: 400,
-    cy: 70,
+    cx: 560,
+    cy: 98,
     why: "The CLI is your primary interface to Docker — without it you can't start, stop, debug, or inspect a single container.",
     purpose:
       "Manage the full container lifecycle, exec into running containers, tail real-time logs, and inspect metadata.",
@@ -51,8 +51,8 @@ const NODES: SkillNode[] = [
     label: "Images & Registry",
     sublabel: "pull · tag · push · layers",
     track: "docker",
-    cx: 220,
-    cy: 190,
+    cx: 308,
+    cy: 266,
     why: "Images are the immutable blueprint for every container. Understanding layers is the key to fast builds and small artefacts.",
     purpose:
       "Push, pull, and tag releases across registries. Master layer caching to cut build times from minutes to seconds.",
@@ -69,8 +69,8 @@ const NODES: SkillNode[] = [
     label: "Dockerfile",
     sublabel: "FROM · RUN · COPY · CMD",
     track: "docker",
-    cx: 580,
-    cy: 190,
+    cx: 812,
+    cy: 266,
     why: "Every image you use was built from a Dockerfile. Writing good ones is the single biggest lever on image size, security, and reproducibility.",
     purpose:
       "Define your app's entire environment — from base OS to runtime config — in a single versioned, auditable file.",
@@ -87,8 +87,8 @@ const NODES: SkillNode[] = [
     label: "Volumes & Mounts",
     sublabel: "named · bind · tmpfs",
     track: "docker",
-    cx: 120,
-    cy: 320,
+    cx: 168,
+    cy: 448,
     why: "Containers are ephemeral by design. Without volumes, your database data disappears the moment the container is removed.",
     purpose:
       "Persist data beyond the container lifecycle, share files between containers, and mount host paths for fast local development.",
@@ -105,8 +105,8 @@ const NODES: SkillNode[] = [
     label: "Networking",
     sublabel: "bridge · host · custom",
     track: "docker",
-    cx: 400,
-    cy: 320,
+    cx: 560,
+    cy: 448,
     why: "Microservices only work if containers can discover and communicate with each other reliably and securely.",
     purpose:
       "Connect services across containers, control port exposure, and lay the foundation for Kubernetes service networking.",
@@ -123,8 +123,8 @@ const NODES: SkillNode[] = [
     label: "Docker Compose",
     sublabel: "services · healthcheck · profiles",
     track: "docker",
-    cx: 680,
-    cy: 320,
+    cx: 952,
+    cy: 448,
     why: "Managing multi-container apps with separate docker run commands is error-prone and not reproducible. Compose solves both problems.",
     purpose:
       "Define, start, and tear down complete application stacks — app, database, cache, reverse proxy — with a single command.",
@@ -141,8 +141,8 @@ const NODES: SkillNode[] = [
     label: "Multi-stage Builds",
     sublabel: "builder pattern · distroless",
     track: "docker",
-    cx: 400,
-    cy: 445,
+    cx: 560,
+    cy: 623,
     why: "Shipping your compiler, build tools, and dev dependencies to production is a security and size disaster. Multi-stage builds eliminate this.",
     purpose:
       "Produce minimal, hardened production images by completely separating the build environment from the runtime environment.",
@@ -160,8 +160,8 @@ const NODES: SkillNode[] = [
     label: "Pods",
     sublabel: "spec · probes · sidecars",
     track: "k8s",
-    cx: 400,
-    cy: 580,
+    cx: 560,
+    cy: 812,
     why: "Everything in Kubernetes runs as a Pod. You cannot deploy, debug, or monitor anything without understanding Pod internals and YAML.",
     purpose:
       "The atomic unit of Kubernetes — wraps one or more containers, defines resource limits, health checks, and storage attachments.",
@@ -178,8 +178,8 @@ const NODES: SkillNode[] = [
     label: "Deployments",
     sublabel: "ReplicaSet · rolling · rollback",
     track: "k8s",
-    cx: 210,
-    cy: 700,
+    cx: 294,
+    cy: 980,
     why: "Manually managing Pod replicas doesn't scale and provides no rollback. Deployments give you declarative control with zero-downtime updates.",
     purpose:
       "Maintain a desired number of healthy Pod replicas with automatic rolling updates, instant rollback, and self-healing on failure.",
@@ -196,8 +196,8 @@ const NODES: SkillNode[] = [
     label: "Services & DNS",
     sublabel: "ClusterIP · NodePort · LB",
     track: "k8s",
-    cx: 590,
-    cy: 700,
+    cx: 826,
+    cy: 980,
     why: "Pods are ephemeral with constantly changing IPs. Services provide the stable network identity that makes inter-service communication reliable.",
     purpose:
       "Expose workloads with stable virtual IPs and DNS names — whether to other services inside the cluster or to external consumers.",
@@ -214,8 +214,8 @@ const NODES: SkillNode[] = [
     label: "ConfigMaps & Secrets",
     sublabel: "envFrom · volume mount",
     track: "k8s",
-    cx: 120,
-    cy: 825,
+    cx: 168,
+    cy: 1155,
     why: "Hard-coding configuration and credentials into images breaks portability and makes rotating secrets a rebuild-and-redeploy nightmare.",
     purpose:
       "Decouple environment-specific config from your image, inject it at runtime, and manage credentials separately from application code.",
@@ -232,8 +232,8 @@ const NODES: SkillNode[] = [
     label: "Ingress & TLS",
     sublabel: "NGINX · cert-manager · rules",
     track: "k8s",
-    cx: 400,
-    cy: 825,
+    cx: 560,
+    cy: 1155,
     why: "Creating a separate LoadBalancer per service is expensive and unmanageable. Ingress routes all external traffic through a single point.",
     purpose:
       "Route HTTP/HTTPS traffic to multiple internal services by hostname and path, with TLS termination and optional auth policies.",
@@ -250,8 +250,8 @@ const NODES: SkillNode[] = [
     label: "Persistent Storage",
     sublabel: "PV · PVC · StorageClass",
     track: "k8s",
-    cx: 680,
-    cy: 825,
+    cx: 952,
+    cy: 1155,
     why: "Stateful workloads like databases need storage that survives Pod restarts and rescheduling across nodes — container storage alone cannot do this.",
     purpose:
       "Attach durable, independently-managed block or file storage to Pods with dynamic provisioning and access-mode control.",
@@ -268,8 +268,8 @@ const NODES: SkillNode[] = [
     label: "RBAC",
     sublabel: "Role · ClusterRole · SA",
     track: "k8s",
-    cx: 210,
-    cy: 950,
+    cx: 294,
+    cy: 1330,
     why: "A compromised workload with cluster-admin access can destroy everything. Least-privilege access is non-negotiable in any production cluster.",
     purpose:
       "Control exactly who (user or service account) can perform which operations on which resources across namespaces.",
@@ -286,8 +286,8 @@ const NODES: SkillNode[] = [
     label: "Autoscaling (HPA)",
     sublabel: "CPU · memory · custom metrics",
     track: "k8s",
-    cx: 590,
-    cy: 950,
+    cx: 826,
+    cy: 1330,
     why: "Traffic spikes are unpredictable. Manual scaling means either over-provisioning (expensive) or under-provisioning (outages).",
     purpose:
       "Automatically scale Pod count up and down based on real CPU, memory, or custom metrics to match actual demand.",
@@ -305,8 +305,8 @@ const NODES: SkillNode[] = [
     label: "Helm",
     sublabel: "charts · values · hooks",
     track: "production",
-    cx: 400,
-    cy: 1075,
+    cx: 560,
+    cy: 1505,
     why: "Raw YAML files don't support parameterisation, versioning, or atomic rollback. Helm brings package-manager semantics to Kubernetes deployments.",
     purpose:
       "Package, version, template, and deploy applications as reusable charts with overridable values and lifecycle hooks.",
@@ -323,8 +323,8 @@ const NODES: SkillNode[] = [
     label: "CI/CD & GitOps",
     sublabel: "Actions · ArgoCD · Flux",
     track: "production",
-    cx: 155,
-    cy: 1190,
+    cx: 217,
+    cy: 1666,
     why: "Manual kubectl deploys are slow, error-prone, and leave no audit trail. GitOps makes the cluster state a direct function of your Git history.",
     purpose:
       "Automate build-test-deploy pipelines and keep cluster state continuously synchronised with a Git repository for full traceability.",
@@ -341,8 +341,8 @@ const NODES: SkillNode[] = [
     label: "Observability",
     sublabel: "Prometheus · Grafana · Loki",
     track: "production",
-    cx: 400,
-    cy: 1190,
+    cx: 560,
+    cy: 1666,
     why: "You cannot fix what you cannot see. Without metrics, logs, and traces you are flying blind when incidents happen in production.",
     purpose:
       "Collect, visualise, and alert on metrics, logs, and distributed traces so you can detect, diagnose, and resolve incidents fast.",
@@ -359,8 +359,8 @@ const NODES: SkillNode[] = [
     label: "Security Hardening",
     sublabel: "PSA · NetworkPolicy · OPA",
     track: "production",
-    cx: 645,
-    cy: 1190,
+    cx: 903,
+    cy: 1666,
     why: "Default Kubernetes clusters are intentionally permissive. Without hardening, a single compromised Pod can pivot across the entire cluster.",
     purpose:
       "Enforce least-privilege at network, runtime, and image levels using admission policies, NetworkPolicies, and continuous scanning.",
@@ -467,9 +467,7 @@ const DONE_STYLE = {
 /* ── Helpers ────────────────────────────────────────────────────── */
 function getStatus(id: string, completed: Set<string>): Status {
   if (completed.has(id)) return "done";
-  const prs = PREREQ_MAP.get(id) ?? [];
-  if (!prs.length || prs.every((p) => completed.has(p))) return "available";
-  return "locked";
+  return "available";
 }
 
 function edgeStroke(fromId: string, toId: string, completed: Set<string>) {
@@ -768,10 +766,20 @@ export default function SkillTree() {
   const selectedNode = selected ? NODE_MAP.get(selected) : null;
   const selectedStatus = selected ? getStatus(selected, completed) : "locked";
 
+  const trackStats = [
+    { track: "docker" as Track, icon: "🐳", label: "Docker", color: "#2563EB" },
+    { track: "k8s" as Track, icon: "☸️", label: "Kubernetes", color: "#7C3AED" },
+    { track: "production" as Track, icon: "🚀", label: "Production", color: "#059669" },
+  ].map(({ track, icon, label, color }) => {
+    const nodes = NODES.filter((n) => n.track === track);
+    const done = nodes.filter((n) => completed.has(n.id)).length;
+    return { track, icon, label, color, total: nodes.length, done };
+  });
+
   return (
     <>
-      {/* Progress */}
-      <div className="mb-5 flex items-center gap-4">
+      {/* Overall progress */}
+      <div className="mb-3 flex items-center gap-3">
         <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-slate-100">
           <div
             className="h-full rounded-full transition-all duration-700"
@@ -797,19 +805,48 @@ export default function SkillTree() {
         )}
       </div>
 
+      {/* Per-track progress */}
+      <div className="mb-6 grid grid-cols-3 gap-3">
+        {trackStats.map(({ icon, label, color, total: tTotal, done }) => {
+          const tPct = tTotal > 0 ? Math.round((done / tTotal) * 100) : 0;
+          return (
+            <div
+              key={label}
+              className="flex flex-col gap-1.5 rounded-2xl border px-3 py-3"
+              style={{ borderColor: color + "33", background: color + "08" }}
+            >
+              <div className="flex items-center justify-between gap-1">
+                <span className="flex items-center gap-1 text-xs font-bold" style={{ color }}>
+                  <span>{icon}</span>
+                  <span className="hidden sm:inline">{label}</span>
+                </span>
+                <span className="text-[11px] font-semibold text-slate-500">
+                  {done}/{tTotal}
+                </span>
+              </div>
+              <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
+                <div
+                  className="h-full rounded-full transition-all duration-700"
+                  style={{ width: `${tPct}%`, background: color }}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
       {/* Legend */}
-      <div className="mb-6 flex flex-wrap justify-center gap-5 text-xs font-semibold">
+      <div className="mb-6 flex flex-wrap justify-center gap-4 text-xs font-semibold">
         {[
           { color: "#2563EB", label: "Docker" },
           { color: "#7C3AED", label: "Kubernetes" },
           { color: "#059669", label: "Production" },
           { color: "#F59E0B", label: "Mastered ⭐" },
-          { color: "#E2E8F0", label: "Locked", border: "#CBD5E1" },
-        ].map(({ color, label, border }) => (
+        ].map(({ color, label }) => (
           <span key={label} className="flex items-center gap-1.5 text-slate-500">
             <span
               className="inline-block h-3 w-3 rounded-full border"
-              style={{ background: color, borderColor: border ?? color }}
+              style={{ background: color, borderColor: color }}
             />
             {label}
           </span>
@@ -847,19 +884,19 @@ export default function SkillTree() {
 
             {/* Section separator lines */}
             <line
-              x1={50}
-              y1={512}
-              x2={750}
-              y2={512}
+              x1={70}
+              y1={717}
+              x2={1050}
+              y2={717}
               stroke="#CBD5E1"
               strokeWidth={1.5}
               strokeDasharray="6 4"
             />
             <line
-              x1={50}
-              y1={1022}
-              x2={750}
-              y2={1022}
+              x1={70}
+              y1={1431}
+              x2={1050}
+              y2={1431}
               stroke="#CBD5E1"
               strokeWidth={1.5}
               strokeDasharray="6 4"
@@ -867,16 +904,16 @@ export default function SkillTree() {
 
             {/* Section labels */}
             {[
-              { y: 28, color: "#2563EB", text: "🐳  DOCKER  TRACK" },
-              { y: 536, color: "#7C3AED", text: "☸️  KUBERNETES  TRACK" },
-              { y: 1046, color: "#059669", text: "🚀  PRODUCTION  TRACK" },
+              { y: 39, color: "#2563EB", text: "🐳  DOCKER  TRACK" },
+              { y: 750, color: "#7C3AED", text: "☸️  KUBERNETES  TRACK" },
+              { y: 1464, color: "#059669", text: "🚀  PRODUCTION  TRACK" },
             ].map(({ y, color, text }) => (
               <text
                 key={text}
                 x={W / 2}
                 y={y}
                 textAnchor="middle"
-                fontSize={11}
+                fontSize={18}
                 fontWeight={800}
                 letterSpacing={3}
                 fill={color}
@@ -899,7 +936,7 @@ export default function SkillTree() {
               return (
                 <path
                   key={`${fId}-${tId}`}
-                  d={`M ${x1} ${y1} C ${x1} ${y1 + 38}, ${x2} ${y2 - 38}, ${x2} ${y2}`}
+                  d={`M ${x1} ${y1} C ${x1} ${y1 + 53}, ${x2} ${y2 - 53}, ${x2} ${y2}`}
                   fill="none"
                   stroke={color}
                   strokeWidth={width}
@@ -915,34 +952,27 @@ export default function SkillTree() {
           {NODES.map((node) => {
             const status = getStatus(node.id, completed);
             const track = NODE_STYLE[node.track];
-            const isLocked = status === "locked";
             const isDone = status === "done";
 
-            const nodeStyle: React.CSSProperties = isLocked
+            const nodeStyle: React.CSSProperties = isDone
               ? {
-                  background: "#F1F5F9",
-                  borderColor: "#CBD5E1",
-                  color: "#94A3B8",
+                  background: DONE_STYLE.grad,
+                  borderColor: DONE_STYLE.border,
+                  color: "#fff",
                   cursor: "pointer",
                 }
-              : isDone
-                ? {
-                    background: DONE_STYLE.grad,
-                    borderColor: DONE_STYLE.border,
-                    color: "#fff",
-                    cursor: "pointer",
-                  }
-                : {
-                    background: track.grad,
-                    borderColor: track.border,
-                    color: "#fff",
-                    cursor: "pointer",
-                  };
+              : {
+                  background: track.grad,
+                  borderColor: track.border,
+                  color: "#fff",
+                  cursor: "pointer",
+                };
 
             return (
               <div
                 key={node.id}
-                className={`absolute flex flex-col items-center justify-center rounded-2xl border-2 transition-transform duration-150 select-none ${!isLocked ? "shadow-lg hover:scale-105 active:scale-95" : ""} ${!isLocked && !isDone ? track.glow : ""} ${isDone ? DONE_STYLE.glow : ""}`}
+                data-node-id={node.id}
+                className={`skill-node absolute flex flex-col items-center justify-center rounded-2xl border-2 select-none shadow-lg cursor-pointer ${!isDone ? track.glow : ""} ${isDone ? DONE_STYLE.glow : ""}`}
                 style={{
                   left: node.cx - NW / 2,
                   top: node.cy - NH / 2,
@@ -950,20 +980,22 @@ export default function SkillTree() {
                   height: NH,
                   ...nodeStyle,
                 }}
-                onClick={() => setSelected(node.id)}
-                title={isLocked ? "Locked — complete prerequisites first" : node.label}
+                onClick={() => {
+                  setSelected(node.id);
+                  const el = document.querySelector(`[data-node-id="${node.id}"]`) as HTMLElement;
+                  if (el) el.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+                }}
+                title={node.label}
               >
                 {isDone && (
                   <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[11px] ring-2 ring-white">
                     ⭐
                   </span>
                 )}
-                <span className="px-2 text-center text-[11px] leading-tight font-extrabold tracking-tight">
+                <span className="px-2 text-center text-[15px] leading-tight font-extrabold tracking-tight">
                   {node.label}
                 </span>
-                <span
-                  className={`mt-0.5 px-2 text-center text-[9px] leading-tight ${isLocked ? "opacity-40" : "opacity-80"}`}
-                >
+                <span className="mt-0.5 px-2 text-center text-[12px] leading-tight opacity-80">
                   {node.sublabel}
                 </span>
               </div>

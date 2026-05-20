@@ -79,7 +79,7 @@ export default function CoursesBrowser({ courses }: { courses: CourseCardData[] 
         </p>
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
-          {filtered.map((course) => {
+          {filtered.map((course, idx) => {
             const theme = getTrackTheme(course.slug);
             const level = LEVELS[course.slug] ?? {
               label: "All levels",
@@ -89,7 +89,8 @@ export default function CoursesBrowser({ courses }: { courses: CourseCardData[] 
             return (
               <article
                 key={course.id}
-                className="group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                className="animate-fade-in-up group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                style={{ animationDelay: `${idx * 120}ms` }}
               >
                 <div className={`h-2 ${theme.heroClass}`} />
                 <div className="flex flex-1 flex-col p-7">

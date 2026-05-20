@@ -75,17 +75,17 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
 
   return (
     <main className="flex-1 bg-slate-50">
-      <section className={`${theme.heroClass} text-white`}>
+      <section className={`${theme.heroClass} text-white overflow-hidden`}>
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <Link
             href="/courses"
-            className="inline-flex text-sm font-semibold text-white/80 transition hover:text-white"
+            className="animate-slide-in-left inline-flex text-sm font-semibold text-white/80 transition hover:text-white"
           >
             ← Back to courses
           </Link>
 
           <div className="mt-6 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-3xl">
+            <div className="animate-fade-in-up max-w-3xl">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="text-4xl">{theme.icon}</span>
                 <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold tracking-[0.25em] uppercase">
@@ -133,7 +133,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
               ) : null}
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3 lg:min-w-[26rem]">
+            <div className="animate-slide-in-right grid gap-3 sm:grid-cols-3 lg:min-w-[26rem]">
               <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
                 <p className="text-xs tracking-wider text-white/70 uppercase">Modules</p>
                 <p className="mt-2 text-2xl font-bold">{course.modules.length}</p>
@@ -165,7 +165,8 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
             return (
               <details
                 key={module.id}
-                className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md"
+                className="animate-fade-in-up group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md"
+                style={{ animationDelay: `${module.order * 80}ms` }}
                 open={module.order === 1}
               >
                 <div className="h-1.5 w-full" style={{ backgroundColor: theme.color }} />
