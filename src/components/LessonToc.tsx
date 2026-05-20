@@ -26,7 +26,7 @@ export default function LessonToc({
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
         if (visible[0]) setActiveId(visible[0].target.id);
       },
-      { rootMargin: "-80px 0px -65% 0px", threshold: [0, 1] },
+      { rootMargin: "-80px 0px -65% 0px", threshold: [0, 1] }
     );
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
@@ -36,7 +36,7 @@ export default function LessonToc({
 
   return (
     <nav aria-label="On this page" className="text-sm">
-      <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
+      <p className="mb-3 text-xs font-bold tracking-[0.2em] text-slate-400 uppercase">
         On this page
       </p>
       <ul className="space-y-0.5 border-l border-slate-200">

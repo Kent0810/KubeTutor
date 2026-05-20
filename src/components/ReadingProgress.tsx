@@ -10,7 +10,8 @@ export default function ReadingProgress({ color }: { color: string }) {
       const doc = document.documentElement;
       const scrollTop = doc.scrollTop || document.body.scrollTop;
       const scrollHeight = (doc.scrollHeight || document.body.scrollHeight) - doc.clientHeight;
-      const pct = scrollHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / scrollHeight) * 100)) : 0;
+      const pct =
+        scrollHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / scrollHeight) * 100)) : 0;
       setProgress(pct);
     };
     update();

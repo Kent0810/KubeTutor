@@ -69,7 +69,10 @@ export default function AdminModuleForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"
+    >
       <div className="grid gap-6 md:grid-cols-2">
         <label className="space-y-2 md:col-span-2">
           <span className="text-sm font-semibold text-slate-700">Course</span>
@@ -77,10 +80,12 @@ export default function AdminModuleForm() {
             value={courseId}
             onChange={(e) => setCourseId(e.target.value)}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
           >
             {courses.map((c) => (
-              <option key={c.id} value={c.id}>{c.title}</option>
+              <option key={c.id} value={c.id}>
+                {c.title}
+              </option>
             ))}
           </select>
         </label>
@@ -94,7 +99,7 @@ export default function AdminModuleForm() {
               if (!slugTouched) setSlug(slugify(e.target.value));
             }}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             placeholder="Getting Started with Docker"
           />
         </label>
@@ -106,7 +111,7 @@ export default function AdminModuleForm() {
             onChange={(e) => setDescription(e.target.value)}
             required
             rows={4}
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             placeholder="What will learners cover in this module?"
           />
         </label>
@@ -115,9 +120,12 @@ export default function AdminModuleForm() {
           <span className="text-sm font-semibold text-slate-700">Slug</span>
           <input
             value={slug}
-            onChange={(e) => { setSlugTouched(true); setSlug(slugify(e.target.value)); }}
+            onChange={(e) => {
+              setSlugTouched(true);
+              setSlug(slugify(e.target.value));
+            }}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             placeholder={generatedSlug || "getting-started"}
           />
         </label>
@@ -130,13 +138,15 @@ export default function AdminModuleForm() {
             value={order}
             onChange={(e) => setOrder(e.target.value)}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
           />
         </label>
       </div>
 
       {status ? (
-        <div className={`rounded-2xl px-4 py-3 text-sm ${status.type === "success" ? "border border-emerald-200 bg-emerald-50 text-emerald-700" : "border border-rose-200 bg-rose-50 text-rose-700"}`}>
+        <div
+          className={`rounded-2xl px-4 py-3 text-sm ${status.type === "success" ? "border border-emerald-200 bg-emerald-50 text-emerald-700" : "border border-rose-200 bg-rose-50 text-rose-700"}`}
+        >
           {status.message}
         </div>
       ) : null}

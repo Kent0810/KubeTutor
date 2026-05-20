@@ -15,13 +15,15 @@ export type LessonOutline = { id: string; text: string; level: 2 | 3 }[];
 const CALLOUT_PATTERN = /^>\s*(note|tip|warning|important|try it|try|example)\s*:?\s*(.*)$/i;
 
 function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-    .slice(0, 80) || "section";
+  return (
+    text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .slice(0, 80) || "section"
+  );
 }
 
 function isIndentedLine(line: string): boolean {
@@ -44,15 +46,25 @@ function detectLang(lines: string[], explicit?: string): string | undefined {
   if (explicit) return explicit.toLowerCase();
   const joined = lines.join("\n");
   const first = lines.find((l) => l.trim().length > 0)?.trim() ?? "";
-  if (/^\$\s/.test(first) || /^(sudo|docker|kubectl|helm|curl|brew|apt|dnf|npm|yarn|pnpm|git|wsl|mkdir|cd|ls|rm|cp|mv|cat|chmod|chown|systemctl|export|echo|nc|wget)\b/.test(first)) {
+  if (
+    /^\$\s/.test(first) ||
+    /^(sudo|docker|kubectl|helm|curl|brew|apt|dnf|npm|yarn|pnpm|git|wsl|mkdir|cd|ls|rm|cp|mv|cat|chmod|chown|systemctl|export|echo|nc|wget)\b/.test(
+      first
+    )
+  ) {
     return "shell";
   }
-  if (/^(FROM|RUN|CMD|ENTRYPOINT|COPY|ADD|WORKDIR|ENV|ARG|LABEL|USER|EXPOSE|HEALTHCHECK|STOPSIGNAL|VOLUME|ONBUILD|SHELL)\b/.test(first)) {
+  if (
+    /^(FROM|RUN|CMD|ENTRYPOINT|COPY|ADD|WORKDIR|ENV|ARG|LABEL|USER|EXPOSE|HEALTHCHECK|STOPSIGNAL|VOLUME|ONBUILD|SHELL)\b/.test(
+      first
+    )
+  ) {
     return "dockerfile";
   }
   if (/^(apiVersion|kind):/m.test(joined)) return "yaml";
   if (/^\s*\{[\s\S]*\}\s*$/m.test(joined.trim()) && /["{][^"]*":/.test(joined)) return "json";
-  if (/^(function|const|let|var|import|export|return|if|for|while|class)\b/.test(first)) return "javascript";
+  if (/^(function|const|let|var|import|export|return|if|for|while|class)\b/.test(first))
+    return "javascript";
   if (/^(def|import|from|class|print|if __name__)\b/.test(first)) return "python";
   if (/^(package|func|var|import)\b/.test(first)) return "go";
   return undefined;
@@ -148,7 +160,9 @@ export function parseLessonContent(content: string): LessonBlock[] {
       const stripped = nonEmpty.map((l) => l.trimStart().replace(/^>\s?/, ""));
       const firstCalloutMatch = stripped[0].match(CALLOUT_PATTERN.source.replace(/^\^>\\s\*/, "^"));
       // Try matching kind on the first line as "Tip: rest" or "Tip" alone
-      const headMatch = stripped[0].match(/^(Note|Tip|Warning|Important|Try it|Try|Example)\s*:\s*(.*)$/i);
+      const headMatch = stripped[0].match(
+        /^(Note|Tip|Warning|Important|Try it|Try|Example)\s*:\s*(.*)$/i
+      );
       let kind: CalloutKind = "note";
       let bodyLines = stripped;
       let title: string | undefined;
@@ -198,7 +212,11 @@ export function parseLessonContent(content: string): LessonBlock[] {
     const remainingNonEmpty = remaining.filter((l) => l.trim().length > 0);
 
     // Labeled code: "Label:" followed by indented lines
-    if (firstLine.endsWith(":") && remainingNonEmpty.length > 0 && remainingNonEmpty.every(isIndentedLine)) {
+    if (
+      firstLine.endsWith(":") &&
+      remainingNonEmpty.length > 0 &&
+      remainingNonEmpty.every(isIndentedLine)
+    ) {
       const codeLines = remaining.map(trimCodeIndent);
       return {
         type: "code",
@@ -209,12 +227,30 @@ export function parseLessonContent(content: string): LessonBlock[] {
     }
 
     // Labeled bullet list
-    if (firstLine.endsWith(":") && remainingNonEmpty.length > 0 && remainingNonEmpty.every(isBulletLine)) {
-      return { type: "labeled-list", label: firstLine.replace(/:$/, ""), items: remainingNonEmpty, ordered: false };
+    if (
+      firstLine.endsWith(":") &&
+      remainingNonEmpty.length > 0 &&
+      remainingNonEmpty.every(isBulletLine)
+    ) {
+      return {
+        type: "labeled-list",
+        label: firstLine.replace(/:$/, ""),
+        items: remainingNonEmpty,
+        ordered: false,
+      };
     }
     // Labeled ordered list
-    if (firstLine.endsWith(":") && remainingNonEmpty.length > 0 && remainingNonEmpty.every(isOrderedLine)) {
-      return { type: "labeled-list", label: firstLine.replace(/:$/, ""), items: remainingNonEmpty, ordered: true };
+    if (
+      firstLine.endsWith(":") &&
+      remainingNonEmpty.length > 0 &&
+      remainingNonEmpty.every(isOrderedLine)
+    ) {
+      return {
+        type: "labeled-list",
+        label: firstLine.replace(/:$/, ""),
+        items: remainingNonEmpty,
+        ordered: true,
+      };
     }
 
     // Short "Section header:" line on its own (legacy)

@@ -1,0 +1,3 @@
+title: "ConfigMaps and Secrets"
+description: "Decouple configuration from code and manage sensitive data securely at runtime."
+order: 3

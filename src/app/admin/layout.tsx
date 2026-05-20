@@ -1,11 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
 
   if (!session || session.role !== "ADMIN") {
@@ -16,7 +12,7 @@ export default async function AdminLayout({
     <div className="flex flex-1">
       <aside className="hidden w-56 shrink-0 border-r border-slate-200 bg-white lg:block">
         <nav className="sticky top-[73px] flex flex-col gap-1 p-4">
-          <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+          <p className="mb-2 px-3 text-xs font-semibold tracking-[0.2em] text-slate-400 uppercase">
             Admin
           </p>
           {[
@@ -37,7 +33,7 @@ export default async function AdminLayout({
           ))}
         </nav>
       </aside>
-      <div className="flex-1 min-w-0">{children}</div>
+      <div className="min-w-0 flex-1">{children}</div>
     </div>
   );
 }

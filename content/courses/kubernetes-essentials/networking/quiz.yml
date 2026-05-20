@@ -1,0 +1,34 @@
+title: Networking in Kubernetes — Quiz
+questions:
+  - text: 'A Service shows `Endpoints: <none>`. What''s the most likely cause?'
+    options:
+      - Network plugin broken
+      - Label selector doesn't match any Ready Pods
+      - DNS misconfigured
+      - API server overloaded
+    correctAnswer: 1
+    explanation: Empty endpoints almost always means the Service's `selector` doesn't match Pods, or matching Pods aren't `Ready`. Check labels first.
+  - text: Which Service type is right for **internal-only** traffic between Pods?
+    options:
+      - LoadBalancer
+      - NodePort
+      - ClusterIP
+      - ExternalName
+    correctAnswer: 2
+    explanation: ClusterIP is the in-cluster, internally-routable virtual IP — the default and right choice for service-to-service traffic.
+  - text: From a Pod in namespace `default`, what's the DNS name to reach Service `api` in namespace `prod`?
+    options:
+      - '`api`'
+      - '`api.prod`'
+      - '`api.default`'
+      - '`api@prod`'
+    correctAnswer: 1
+    explanation: Within the same namespace, `api` works. Across namespaces, `api.prod` (or fully `api.prod.svc.cluster.local`). The namespace is the second segment.
+  - text: 'What is a **headless** Service (`clusterIP: None`) used for?'
+    options:
+      - Disabling networking
+      - Returning each Pod's IP directly via DNS
+      - Faster load balancing
+      - Exposing UDP only
+    correctAnswer: 1
+    explanation: Headless Services return all matching Pod IPs as DNS A records, giving the client per-Pod addressing — essential for StatefulSets and peer-aware databases.

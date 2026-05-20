@@ -21,15 +21,15 @@ export async function generateMetadata({ params }: QuizPageProps): Promise<Metad
 export default async function QuizPage({ params }: QuizPageProps) {
   const { id } = await params;
 
-  const quiz = await prisma.quiz.findUnique({
-    where: { id },
+  const quiz = await prisma.quiz.findFirst({
+    where: { id, moduleId: { not: null } },
     include: {
       questions: true,
       module: { include: { course: true } },
     },
   });
 
-  if (!quiz) notFound();
+  if (!quiz || !quiz.module) notFound();
 
   return (
     <main className="flex-1 bg-gray-50">
@@ -43,7 +43,7 @@ export default async function QuizPage({ params }: QuizPageProps) {
         </nav>
 
         <div className="mt-6 rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
+          <p className="text-xs font-semibold tracking-[0.2em] text-blue-300 uppercase">
             {quiz.module.course.title} · {quiz.module.title}
           </p>
           <h1 className="mt-3 text-3xl font-bold">{quiz.title}</h1>

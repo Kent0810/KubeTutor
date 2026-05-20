@@ -2,7 +2,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
 const SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? "kubetutor-dev-secret-change-in-production",
+  process.env.JWT_SECRET ?? "kubetutor-dev-secret-change-in-production"
 );
 const COOKIE_NAME = "kt_session";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days

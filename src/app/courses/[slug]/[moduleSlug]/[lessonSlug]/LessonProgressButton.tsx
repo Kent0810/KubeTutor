@@ -7,7 +7,10 @@ type LessonProgressButtonProps = {
   initialCompleted: boolean;
 };
 
-export default function LessonProgressButton({ lessonId, initialCompleted }: LessonProgressButtonProps) {
+export default function LessonProgressButton({
+  lessonId,
+  initialCompleted,
+}: LessonProgressButtonProps) {
   const [completed, setCompleted] = useState(initialCompleted);
   const [loading, setLoading] = useState(false);
 

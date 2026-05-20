@@ -1,0 +1,34 @@
+title: RBAC and Security — Quiz
+questions:
+  - text: What's the difference between a Role and a ClusterRole?
+    options:
+      - None
+      - Role is namespaced; ClusterRole is cluster-wide
+      - Role is for users; ClusterRole is for ServiceAccounts
+      - ClusterRole is deprecated
+    correctAnswer: 1
+    explanation: Role lives in a single namespace; ClusterRole is cluster-scoped. You can also bind a ClusterRole with a RoleBinding to scope it to one namespace.
+  - text: How do you check what a ServiceAccount can do?
+    options:
+      - Read its YAML
+      - '`kubectl auth can-i --list --as=system:serviceaccount:ns:sa`'
+      - Run a Pod and try
+      - Check audit logs
+    correctAnswer: 1
+    explanation: '`kubectl auth can-i` impersonates the subject and queries the API server''s authorisation engine — the definitive answer.'
+  - text: Your Pod doesn't talk to the Kubernetes API. What's the safe default?
+    options:
+      - Mount the default token
+      - 'Set `automountServiceAccountToken: false`'
+      - Create a Role with no rules
+      - Disable RBAC
+    correctAnswer: 1
+    explanation: If the workload doesn't need the API, don't mount a token at all. It removes an entire class of escalation paths.
+  - text: 'Your cluster has no NetworkPolicies and you create one with `policyTypes: [Ingress]` selecting Pod `web` with no rules. Result?'
+    options:
+      - No change
+      - All ingress to `web` is denied (default deny)
+      - All ingress is allowed
+      - Egress is denied
+    correctAnswer: 1
+    explanation: Once any Ingress policy selects a Pod, the default for that Pod becomes deny. An empty rules block means no traffic is allowed.

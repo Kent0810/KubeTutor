@@ -1,0 +1,34 @@
+title: Helm — Quiz
+questions:
+  - text: What is a Helm **release**?
+    options:
+      - A chart version
+      - A named instance of a chart installed in a cluster
+      - A git tag
+      - A Docker image
+    correctAnswer: 1
+    explanation: You can install the same chart many times under different release names; each release is tracked independently and can be upgraded or rolled back.
+  - text: How do you preview what `helm install` will create without applying it?
+    options:
+      - '`helm install --preview`'
+      - '`helm template` or `helm install --dry-run`'
+      - '`kubectl diff`'
+      - It's not possible
+    correctAnswer: 1
+    explanation: Both render the chart to YAML so you can review the manifests. Use this for every prod upgrade.
+  - text: Where should environment-specific overrides live?
+    options:
+      - Edit the chart in place
+      - '`values-prod.yaml` files passed with `-f`'
+      - On the operator's laptop
+      - Hard-coded in templates
+    correctAnswer: 1
+    explanation: Per-environment values files keep your chart generic and your environments explicit and version-controlled.
+  - text: Which catches typos at install time?
+    options:
+      - '`values.schema.json`'
+      - A linter
+      - Kubernetes admission
+      - Nothing — runtime only
+    correctAnswer: 0
+    explanation: JSON schema validation runs before any resources are created. It's the cheapest way to prevent misconfigured releases.

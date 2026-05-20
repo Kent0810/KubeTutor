@@ -19,7 +19,10 @@ export async function POST(request: Request) {
     const { title, description, slug, imageUrl, order } = await request.json();
 
     if (!title || !description || !slug) {
-      return Response.json({ error: "title, description, and slug are required." }, { status: 400 });
+      return Response.json(
+        { error: "title, description, and slug are required." },
+        { status: 400 }
+      );
     }
 
     const course = await prisma.course.create({

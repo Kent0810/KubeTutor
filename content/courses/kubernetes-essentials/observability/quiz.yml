@@ -1,0 +1,34 @@
+title: Observability and Monitoring — Quiz
+questions:
+  - text: Prometheus collects metrics by...
+    options:
+      - Receiving pushes from apps
+      - Scraping `/metrics` endpoints on a schedule
+      - Tailing log files
+      - Reading kernel counters
+    correctAnswer: 1
+    explanation: 'Prometheus is pull-based: apps expose `/metrics`, Prometheus scrapes them periodically. (Pushgateway exists for short-lived jobs only.)'
+  - text: The RED method for service observability stands for...
+    options:
+      - Rate, Errors, Duration
+      - Read, Edit, Delete
+      - Receive, Encode, Dispatch
+      - Requests, Endpoints, Dependencies
+    correctAnswer: 0
+    explanation: RED — Rate, Errors, Duration — covers the user-visible properties of a service. Pair with USE (Utilisation, Saturation, Errors) for resources.
+  - text: Why should Loki label cardinality be kept low?
+    options:
+      - Loki indexes labels — high cardinality wrecks performance and cost
+      - Loki only supports 5 labels
+      - It's a security policy
+      - It improves Grafana rendering
+    correctAnswer: 0
+    explanation: Loki indexes labels, not content. Putting high-cardinality fields (user_id, request_id) in labels explodes the index. Use line content (`|=`) for those.
+  - text: Best practice for paging alerts?
+    options:
+      - Page on CPU > 80%
+      - Page on SLO burn-rate breaches
+      - Page on every WARN log
+      - Page on every restart
+    correctAnswer: 1
+    explanation: Symptom-based alerts tied to user-visible SLOs minimise pager noise. CPU and resource alerts belong in a dashboard, not in your phone at 3 AM.

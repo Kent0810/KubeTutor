@@ -23,7 +23,10 @@ export async function POST(request: Request) {
     const { title, description, slug, order, courseId } = await request.json();
 
     if (!title || !description || !slug || !courseId) {
-      return Response.json({ error: "title, description, slug, and courseId are required." }, { status: 400 });
+      return Response.json(
+        { error: "title, description, slug, and courseId are required." },
+        { status: 400 }
+      );
     }
 
     const moduleRecord = await prisma.module.create({
@@ -33,7 +36,10 @@ export async function POST(request: Request) {
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "";
     if (msg.includes("Unique constraint")) {
-      return Response.json({ error: "A module with that slug already exists in this course." }, { status: 409 });
+      return Response.json(
+        { error: "A module with that slug already exists in this course." },
+        { status: 409 }
+      );
     }
     console.error("[POST /api/modules]", error);
     return Response.json({ error: "Something went wrong." }, { status: 500 });

@@ -1,0 +1,34 @@
+title: Production Operations — Quiz
+questions:
+  - text: Safe production default for a stateless Deployment rolling update?
+    options:
+      - '`maxSurge: 100%, maxUnavailable: 100%`'
+      - '`maxSurge: 25%, maxUnavailable: 0`'
+      - '`maxSurge: 0, maxUnavailable: 100%`'
+      - Defaults are fine for any workload
+    correctAnswer: 1
+    explanation: Surge by 25% and never go below desired keeps capacity stable during rollouts — the standard safe default for stateless apps.
+  - text: Difference between **canary** and **blue-green**?
+    options:
+      - Same thing
+      - Canary sends a small % of traffic to the new version; blue-green switches all at once between two full environments
+      - Blue-green is faster
+      - Canary requires Istio
+    correctAnswer: 1
+    explanation: Canary gradually shifts traffic and limits blast radius. Blue-green flips 100% from the old (blue) to the new (green) environment in one cutover.
+  - text: Which is the source of truth for a Kubernetes cluster's state?
+    options:
+      - API server
+      - etcd
+      - kubelet
+      - Scheduler
+    correctAnswer: 1
+    explanation: etcd holds the canonical state. **Back it up daily** and rehearse restores quarterly — your RTO is whatever you've actually measured.
+  - text: Recommended cluster upgrade order?
+    options:
+      - All nodes first, then control plane
+      - Control plane first, then node pools one at a time, draining with PDB respect
+      - Random order
+      - Skip versions to save time
+    correctAnswer: 1
+    explanation: Control plane components are backward compatible with one minor version of kubelet — upgrade control plane first, then nodes incrementally.

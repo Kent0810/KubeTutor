@@ -77,10 +77,10 @@ export default async function CoursesPage() {
           }}
         />
         <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-300">
+          <p className="text-sm font-semibold tracking-[0.3em] text-cyan-300 uppercase">
             Learning Library
           </p>
-          <h1 className="mt-4 max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">
+          <h1 className="mt-4 max-w-3xl text-4xl leading-tight font-extrabold sm:text-5xl">
             Choose your next platform skill track
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">

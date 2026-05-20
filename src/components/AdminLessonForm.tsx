@@ -84,7 +84,10 @@ export default function AdminLessonForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"
+    >
       <div className="grid gap-6 md:grid-cols-2">
         <label className="space-y-2">
           <span className="text-sm font-semibold text-slate-700">Course</span>
@@ -92,9 +95,13 @@ export default function AdminLessonForm() {
             value={courseId}
             onChange={(e) => setCourseId(e.target.value)}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
           >
-            {courses.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
+            {courses.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.title}
+              </option>
+            ))}
           </select>
         </label>
 
@@ -105,12 +112,17 @@ export default function AdminLessonForm() {
             onChange={(e) => setModuleId(e.target.value)}
             required
             disabled={modules.length === 0}
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-400"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-400"
           >
-            {modules.length === 0
-              ? <option value="">No modules yet</option>
-              : modules.map((m) => <option key={m.id} value={m.id}>{m.title}</option>)
-            }
+            {modules.length === 0 ? (
+              <option value="">No modules yet</option>
+            ) : (
+              modules.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.title}
+                </option>
+              ))
+            )}
           </select>
         </label>
 
@@ -123,7 +135,7 @@ export default function AdminLessonForm() {
               if (!slugTouched) setSlug(slugify(e.target.value));
             }}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             placeholder="Introduction to Containers"
           />
         </label>
@@ -135,7 +147,7 @@ export default function AdminLessonForm() {
             onChange={(e) => setContent(e.target.value)}
             required
             rows={10}
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 font-mono text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 font-mono text-sm transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             placeholder="Lesson content goes here…"
           />
         </label>
@@ -144,9 +156,12 @@ export default function AdminLessonForm() {
           <span className="text-sm font-semibold text-slate-700">Slug</span>
           <input
             value={slug}
-            onChange={(e) => { setSlugTouched(true); setSlug(slugify(e.target.value)); }}
+            onChange={(e) => {
+              setSlugTouched(true);
+              setSlug(slugify(e.target.value));
+            }}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             placeholder={generatedSlug || "intro-to-containers"}
           />
         </label>
@@ -159,13 +174,15 @@ export default function AdminLessonForm() {
             value={order}
             onChange={(e) => setOrder(e.target.value)}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
           />
         </label>
       </div>
 
       {status ? (
-        <div className={`rounded-2xl px-4 py-3 text-sm ${status.type === "success" ? "border border-emerald-200 bg-emerald-50 text-emerald-700" : "border border-rose-200 bg-rose-50 text-rose-700"}`}>
+        <div
+          className={`rounded-2xl px-4 py-3 text-sm ${status.type === "success" ? "border border-emerald-200 bg-emerald-50 text-emerald-700" : "border border-rose-200 bg-rose-50 text-rose-700"}`}
+        >
           {status.message}
         </div>
       ) : null}

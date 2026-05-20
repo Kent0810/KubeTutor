@@ -61,7 +61,10 @@ export default function AdminCourseForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"
+    >
       <div className="grid gap-6 md:grid-cols-2">
         <label className="space-y-2 md:col-span-2">
           <span className="text-sm font-semibold text-slate-700">Title</span>
@@ -76,7 +79,7 @@ export default function AdminCourseForm() {
               }
             }}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             placeholder="Kubernetes for Developers"
           />
         </label>
@@ -88,7 +91,7 @@ export default function AdminCourseForm() {
             onChange={(event) => setDescription(event.target.value)}
             required
             rows={5}
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             placeholder="Describe what learners will achieve in this course."
           />
         </label>
@@ -102,7 +105,7 @@ export default function AdminCourseForm() {
               setSlug(slugify(event.target.value));
             }}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             placeholder={generatedSlug || "kubernetes-for-developers"}
           />
         </label>
@@ -115,7 +118,7 @@ export default function AdminCourseForm() {
             value={order}
             onChange={(event) => setOrder(event.target.value)}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
           />
         </label>
       </div>

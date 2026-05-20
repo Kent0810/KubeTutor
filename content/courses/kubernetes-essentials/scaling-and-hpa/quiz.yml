@@ -1,0 +1,34 @@
+title: Scaling and Autoscaling — Quiz
+questions:
+  - text: HPA isn't scaling your Deployment. First thing to check?
+    options:
+      - Network policies
+      - That `metrics-server` is installed and Pods have `resources.requests` set
+      - Node taints
+      - DNS config
+    correctAnswer: 1
+    explanation: HPA needs metrics from metrics-server and a `requests` value to compute utilisation. Without either, HPA is silent.
+  - text: What does Cluster Autoscaler use to decide it needs more nodes?
+    options:
+      - CPU usage on existing nodes
+      - The presence of unschedulable Pods
+      - Time of day
+      - PDB violations
+    correctAnswer: 1
+    explanation: CA looks for Pods that can't be scheduled because of resource constraints. No pending Pods = no scale-up, even if nodes are full.
+  - text: 'A PodDisruptionBudget with `minAvailable: 50%` on a 4-replica Deployment. You drain a node hosting 3 of them. What happens?'
+    options:
+      - Drain succeeds immediately
+      - Drain stalls until enough replicas are ready elsewhere
+      - Drain fails permanently
+      - PDB is ignored
+    correctAnswer: 1
+    explanation: The drain respects the PDB and waits for replicas to be rescheduled and Ready before evicting more. That's the safety net.
+  - text: Combining HPA and VPA on the same metric (CPU) is...
+    options:
+      - Recommended
+      - A known anti-pattern — they fight
+      - Required for elasticity
+      - Only safe with KEDA
+    correctAnswer: 1
+    explanation: HPA wants to add replicas when CPU is high; VPA wants to raise requests of existing replicas. On the same metric they oscillate.

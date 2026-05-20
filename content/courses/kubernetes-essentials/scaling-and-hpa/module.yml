@@ -1,0 +1,3 @@
+title: "Scaling and Autoscaling"
+description: "Manual scaling, HPA, VPA, and Cluster Autoscaler — handle any traffic pattern automatically."
+order: 5

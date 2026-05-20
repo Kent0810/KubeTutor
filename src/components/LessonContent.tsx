@@ -74,21 +74,22 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
         <code
           key={key}
           className="rounded-md bg-slate-100 px-1.5 py-0.5 font-mono text-[0.9em] text-slate-800"
+          style={{ fontFeatureSettings: '"liga" 0, "calt" 0', fontVariantLigatures: "none" }}
         >
           {code.slice(1, -1)}
-        </code>,
+        </code>
       );
     } else if (bold) {
       tokens.push(
         <strong key={key} className="font-semibold text-slate-900">
           {bold.slice(2, -2)}
-        </strong>,
+        </strong>
       );
     } else if (italic) {
       tokens.push(
         <em key={key} className="italic">
           {italic.slice(1, -1)}
-        </em>,
+        </em>
       );
     } else if (url) {
       tokens.push(
@@ -100,7 +101,7 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
           className="font-medium text-blue-600 underline-offset-2 hover:underline"
         >
           {url}
-        </a>,
+        </a>
       );
     } else {
       tokens.push(whole);
@@ -154,7 +155,7 @@ function CodeBlock({
               {label}
             </span>
           ) : null}
-          <span className="ml-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+          <span className="ml-1 text-[11px] font-semibold tracking-[0.18em] text-slate-400 uppercase">
             {langLabel}
           </span>
         </div>
@@ -166,7 +167,10 @@ function CodeBlock({
           {copied ? "✓ Copied" : "Copy"}
         </button>
       </div>
-      <pre className="overflow-x-auto px-4 py-4 font-mono text-[13px] leading-6 text-slate-100">
+      <pre
+        className="overflow-x-auto px-4 py-4 font-mono text-[13px] leading-6 text-slate-100"
+        style={{ fontFeatureSettings: '"liga" 0, "calt" 0', fontVariantLigatures: "none" }}
+      >
         <code>{text}</code>
       </pre>
     </div>
@@ -214,15 +218,7 @@ function BulletList({
   );
 }
 
-function Callout({
-  kind,
-  title,
-  lines,
-}: {
-  kind: CalloutKind;
-  title?: string;
-  lines: string[];
-}) {
+function Callout({ kind, title, lines }: { kind: CalloutKind; title?: string; lines: string[] }) {
   const style = CALLOUT_STYLES[kind];
   const body = lines.join("\n").trim();
   return (
@@ -234,11 +230,13 @@ function Callout({
         <span className="text-base">{style.icon}</span>
       </div>
       <div className="min-w-0 flex-1">
-        <p className={`text-xs font-bold uppercase tracking-[0.18em] ${style.title}`}>
+        <p className={`text-xs font-bold tracking-[0.18em] uppercase ${style.title}`}>
           {style.label}
-          {title ? <span className="ml-2 normal-case tracking-normal opacity-80">— {title}</span> : null}
+          {title ? (
+            <span className="ml-2 tracking-normal normal-case opacity-80">— {title}</span>
+          ) : null}
         </p>
-        <p className="mt-1.5 whitespace-pre-line text-[15px] leading-7 text-slate-700">
+        <p className="mt-1.5 text-[15px] leading-7 whitespace-pre-line text-slate-700">
           {renderInline(body, `cal-${kind}`)}
         </p>
       </div>
@@ -251,7 +249,7 @@ function Table({ headers, rows }: { headers: string[]; rows: string[][] }) {
     <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-slate-200 text-sm">
-          <thead className="bg-slate-50 text-left text-xs font-bold uppercase tracking-wider text-slate-600">
+          <thead className="bg-slate-50 text-left text-xs font-bold tracking-wider text-slate-600 uppercase">
             <tr>
               {headers.map((h, i) => (
                 <th key={i} className="px-4 py-3">
@@ -285,7 +283,7 @@ function renderBlock(block: LessonBlock, index: number, trackColor: string): Rea
       return (
         <div key={key} id={block.id} className="scroll-mt-24">
           {isH2 ? (
-            <h2 className="mb-4 mt-10 flex items-center gap-3 text-2xl font-extrabold tracking-tight text-slate-900 first:mt-0">
+            <h2 className="mt-10 mb-4 flex items-center gap-3 text-2xl font-extrabold tracking-tight text-slate-900 first:mt-0">
               <span
                 className="inline-block h-7 w-1.5 rounded-full"
                 style={{ backgroundColor: trackColor }}
@@ -293,9 +291,7 @@ function renderBlock(block: LessonBlock, index: number, trackColor: string): Rea
               {block.text}
             </h2>
           ) : (
-            <h3 className="mb-3 mt-8 text-lg font-bold text-slate-900 first:mt-0">
-              {block.text}
-            </h3>
+            <h3 className="mt-8 mb-3 text-lg font-bold text-slate-900 first:mt-0">{block.text}</h3>
           )}
         </div>
       );
@@ -305,7 +301,7 @@ function renderBlock(block: LessonBlock, index: number, trackColor: string): Rea
         <h3
           key={key}
           id={block.id}
-          className="mb-3 mt-8 flex items-center gap-2 text-lg font-bold text-slate-900 scroll-mt-24 first:mt-0"
+          className="mt-8 mb-3 flex scroll-mt-24 items-center gap-2 text-lg font-bold text-slate-900 first:mt-0"
         >
           <span className="h-5 w-1 rounded-full" style={{ backgroundColor: trackColor }} />
           {block.text}
@@ -313,7 +309,7 @@ function renderBlock(block: LessonBlock, index: number, trackColor: string): Rea
       );
     case "paragraph":
       return (
-        <p key={key} className="whitespace-pre-line text-[15px] leading-8 text-slate-700">
+        <p key={key} className="text-[15px] leading-8 whitespace-pre-line text-slate-700">
           {renderInline(block.text, key)}
         </p>
       );
@@ -328,11 +324,13 @@ function renderBlock(block: LessonBlock, index: number, trackColor: string): Rea
         />
       );
     case "list":
-      return <BulletList key={key} items={block.items} trackColor={trackColor} ordered={block.ordered} />;
+      return (
+        <BulletList key={key} items={block.items} trackColor={trackColor} ordered={block.ordered} />
+      );
     case "labeled-list":
       return (
         <div key={key} className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <p className="text-sm font-semibold tracking-[0.18em] text-slate-500 uppercase">
             {block.label}
           </p>
           <BulletList items={block.items} trackColor={trackColor} ordered={block.ordered} />
@@ -352,5 +350,7 @@ export default function LessonContent({ content, trackColor }: LessonContentProp
   if (blocks.length === 0) {
     return <p className="text-base leading-8 text-slate-500">Lesson content is coming soon.</p>;
   }
-  return <div className="space-y-6">{blocks.map((block, i) => renderBlock(block, i, trackColor))}</div>;
+  return (
+    <div className="space-y-6">{blocks.map((block, i) => renderBlock(block, i, trackColor))}</div>
+  );
 }

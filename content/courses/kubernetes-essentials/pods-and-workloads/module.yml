@@ -1,0 +1,3 @@
+title: "Pods and Workloads"
+description: "Understand the basic unit of Kubernetes — the Pod — and higher-level workload controllers."
+order: 1

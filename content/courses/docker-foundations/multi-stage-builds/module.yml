@@ -1,0 +1,3 @@
+title: "Multi-stage Builds and Optimization"
+description: "Shrink images to minimal size using multi-stage builds, layer caching, and distroless bases."
+order: 6

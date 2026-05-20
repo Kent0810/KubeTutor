@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import LessonContent from "@/components/LessonContent";
+import LessonQuiz from "@/components/LessonQuiz";
 import LessonToc from "@/components/LessonToc";
 import ReadingProgress from "@/components/ReadingProgress";
 import { getSession } from "@/lib/auth";
@@ -54,12 +55,18 @@ export default async function LessonViewerPage({ params }: LessonViewerPageProps
   if (currentLessonIndex === -1) notFound();
 
   const lesson = moduleRecord.lessons[currentLessonIndex];
-  const previousLesson = currentLessonIndex > 0 ? moduleRecord.lessons[currentLessonIndex - 1] : null;
+  const previousLesson =
+    currentLessonIndex > 0 ? moduleRecord.lessons[currentLessonIndex - 1] : null;
   const nextLesson =
     currentLessonIndex < moduleRecord.lessons.length - 1
       ? moduleRecord.lessons[currentLessonIndex + 1]
       : null;
   const theme = getTrackTheme(moduleRecord.course.slug);
+
+  const lessonQuiz = await prisma.quiz.findFirst({
+    where: { lessonId: lesson.id },
+    include: { questions: true },
+  });
 
   const outline = extractOutline(parseLessonContent(lesson.content));
 
@@ -95,7 +102,10 @@ export default async function LessonViewerPage({ params }: LessonViewerPageProps
               Courses
             </Link>
             <span>/</span>
-            <Link href={`/courses/${moduleRecord.course.slug}`} className="transition hover:text-white">
+            <Link
+              href={`/courses/${moduleRecord.course.slug}`}
+              className="transition hover:text-white"
+            >
               {moduleRecord.course.title}
             </Link>
             <span>/</span>
@@ -113,7 +123,7 @@ export default async function LessonViewerPage({ params }: LessonViewerPageProps
             <div className="min-w-0 flex-1">
               <div className="mb-3 flex flex-wrap items-center gap-2">
                 <span className="text-3xl">{theme.icon}</span>
-                <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wider">
+                <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold tracking-wider uppercase">
                   Lesson {lesson.order} of {totalLessonsInModule}
                 </span>
                 <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium">
@@ -128,7 +138,7 @@ export default async function LessonViewerPage({ params }: LessonViewerPageProps
                   </span>
                 ) : null}
               </div>
-              <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl">{lesson.title}</h1>
+              <h1 className="text-3xl leading-tight font-extrabold sm:text-4xl">{lesson.title}</h1>
 
               {session ? (
                 <div className="mt-5 max-w-lg">
@@ -156,7 +166,7 @@ export default async function LessonViewerPage({ params }: LessonViewerPageProps
           {/* Left: module lesson list */}
           <aside className="lg:w-64 lg:shrink-0">
             <div className="sticky top-20 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-              <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+              <p className="mb-1 text-xs font-bold tracking-[0.18em] text-slate-400 uppercase">
                 Module
               </p>
               <p className="mb-4 text-sm font-semibold text-slate-900">{moduleRecord.title}</p>
@@ -200,6 +210,16 @@ export default async function LessonViewerPage({ params }: LessonViewerPageProps
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
               <LessonContent content={lesson.content} trackColor={theme.color} />
             </div>
+
+            {lessonQuiz && lessonQuiz.questions.length > 0 ? (
+              <div className="mt-6">
+                <LessonQuiz
+                  title={lessonQuiz.title}
+                  questions={lessonQuiz.questions}
+                  trackColor={theme.color}
+                />
+              </div>
+            ) : null}
 
             <div
               id="lesson-progress"

@@ -33,7 +33,7 @@ export default async function AdminPage() {
     <main className="flex-1 bg-gray-50">
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-300">
+          <p className="text-sm font-semibold tracking-[0.2em] text-blue-300 uppercase">
             Admin Panel
           </p>
           <h1 className="mt-3 text-4xl font-bold">Content Overview</h1>

@@ -1,0 +1,34 @@
+title: Persistent Storage — Quiz
+questions:
+  - text: Access mode `ReadWriteOnce` means...
+    options:
+      - One Pod can mount it
+      - One node can mount it (one or many Pods on that node)
+      - Read-only after first write
+      - Only the controller can read
+    correctAnswer: 1
+    explanation: '`RWO` is per-**node**, not per-Pod. That distinction matters during failover and when scheduling multiple replicas of a controller.'
+  - text: A PVC is stuck `Pending`. Most likely?
+    options:
+      - Permissions issue
+      - No matching PV and no usable StorageClass
+      - Volume name typo
+      - Network plugin not installed
+    correctAnswer: 1
+    explanation: A PVC stays Pending until it can bind. Either provide a matching static PV or ensure a default StorageClass can dynamically provision one.
+  - text: Which `volumeBindingMode` avoids the cross-zone scheduling bug in multi-AZ clusters?
+    options:
+      - '`Immediate`'
+      - '`WaitForFirstConsumer`'
+      - '`OnDemand`'
+      - '`Topology`'
+    correctAnswer: 1
+    explanation: '`WaitForFirstConsumer` delays volume provisioning until a Pod is scheduled, so the volume lands in the right zone.'
+  - text: How do StatefulSets give each replica its own PVC?
+    options:
+      - You create them manually
+      - Via `volumeClaimTemplates`
+      - 'Via `dynamicClaims: true`'
+      - They share one PVC
+    correctAnswer: 1
+    explanation: '`volumeClaimTemplates` causes the controller to create a uniquely-named PVC per replica, preserved across restarts.'

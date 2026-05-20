@@ -1,0 +1,34 @@
+title: Volumes and Storage — Quiz
+questions:
+  - text: Which mount type stores data **in RAM only**, so it's never written to disk?
+    options:
+      - Named volume
+      - Bind mount
+      - '`tmpfs` mount'
+      - Anonymous volume
+    correctAnswer: 2
+    explanation: '`tmpfs` mounts live in memory. They disappear when the container stops — ideal for secrets or scratch space.'
+  - text: Why are bind mounts noticeably slower than named volumes on macOS and Windows?
+    options:
+      - Docker throttles them
+      - Bind mounts cross the Linux VM boundary
+      - They run on `fuse`
+      - They use NFS
+    correctAnswer: 1
+    explanation: Docker Desktop runs a Linux VM. Bind mounts cross between the host filesystem and the VM, which adds significant overhead. Named volumes live inside the VM.
+  - text: Which is the recommended way to back up a named volume `mydata`?
+    options:
+      - Copy the path from `docker volume inspect`
+      - '`docker run --rm -v mydata:/data -v $(pwd):/backup alpine tar czf /backup/mydata.tgz -C /data .`'
+      - '`docker volume backup mydata`'
+      - Volumes can't be backed up
+    correctAnswer: 1
+    explanation: Backup is done with an ephemeral container that has both the volume and your host directory mounted, then tars the contents.
+  - text: A bind mount onto a path inside a container that already had files — what happens?
+    options:
+      - The container's files are merged with the host
+      - The container's files at that path are hidden
+      - Docker refuses to start
+      - Docker copies the container files to the host
+    correctAnswer: 1
+    explanation: Bind mounts (and volumes) **shadow** anything that was at the mount point in the image. This catches people out constantly.

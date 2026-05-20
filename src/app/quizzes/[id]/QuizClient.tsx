@@ -73,7 +73,7 @@ export default function QuizClient({ quizId, questions }: QuizClientProps) {
             passed ? "bg-emerald-700" : "bg-rose-700"
           }`}
         >
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] opacity-75">
+          <p className="text-sm font-semibold tracking-[0.2em] uppercase opacity-75">
             {passed ? "🎉 Well done!" : "Keep practicing"}
           </p>
           <p className="mt-2 text-5xl font-bold">
@@ -87,12 +87,10 @@ export default function QuizClient({ quizId, questions }: QuizClientProps) {
             <div
               key={r.questionId}
               className={`rounded-3xl border p-6 ${
-                r.correct
-                  ? "border-emerald-200 bg-emerald-50"
-                  : "border-rose-200 bg-rose-50"
+                r.correct ? "border-emerald-200 bg-emerald-50" : "border-rose-200 bg-rose-50"
               }`}
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+              <p className="text-xs font-semibold tracking-[0.2em] text-slate-500 uppercase">
                 Question {idx + 1}
               </p>
               <p className="mt-2 font-semibold text-slate-900">{r.text}</p>
@@ -106,9 +104,7 @@ export default function QuizClient({ quizId, questions }: QuizClientProps) {
                   <>
                     <p className="text-rose-700">
                       ✗ Your answer:{" "}
-                      {r.chosen >= 0
-                        ? questions[idx]?.options[r.chosen]
-                        : "Not answered"}
+                      {r.chosen >= 0 ? questions[idx]?.options[r.chosen] : "Not answered"}
                     </p>
                     <p className="text-emerald-700">
                       ✓ Correct answer: {questions[idx]?.options[r.correctAnswer]}
@@ -155,7 +151,7 @@ export default function QuizClient({ quizId, questions }: QuizClientProps) {
           key={question.id}
           className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+          <p className="text-xs font-semibold tracking-[0.2em] text-slate-500 uppercase">
             Question {idx + 1} of {questions.length}
           </p>
           <p className="mt-3 text-lg font-semibold text-slate-900">{question.text}</p>
@@ -167,9 +163,7 @@ export default function QuizClient({ quizId, questions }: QuizClientProps) {
                 <button
                   key={optIdx}
                   type="button"
-                  onClick={() =>
-                    setAnswers((prev) => ({ ...prev, [question.id]: optIdx }))
-                  }
+                  onClick={() => setAnswers((prev) => ({ ...prev, [question.id]: optIdx }))}
                   className={`w-full rounded-2xl border px-4 py-3 text-left text-sm transition ${
                     selected
                       ? "border-blue-500 bg-blue-50 font-semibold text-blue-700 ring-2 ring-blue-200"

@@ -1,0 +1,34 @@
+title: Debugging Containers — Quiz
+questions:
+  - text: A container exited with code `137`. What's the most likely cause?
+    options:
+      - Application bug
+      - Out of memory (SIGKILL)
+      - Clean shutdown
+      - Image not found
+    correctAnswer: 1
+    explanation: Exit code 137 is `128 + 9`, where 9 is SIGKILL — almost always the kernel OOM-killer hitting your memory limit.
+  - text: Your image is `distroless` so `docker exec -it sh` fails. What's the right next step?
+    options:
+      - Rebuild with Alpine
+      - Use `docker run` with a debug container sharing the target's namespaces
+      - Give up
+      - '`docker cp` the binary out'
+    correctAnswer: 1
+    explanation: Run a busybox container with `--pid=container:<name>` and shared network/IPC namespaces. You get a shell in the same context without polluting the production image.
+  - text: Which command shows live CPU and memory usage per container?
+    options:
+      - '`docker logs`'
+      - '`docker stats`'
+      - '`docker inspect`'
+      - '`docker top`'
+    correctAnswer: 1
+    explanation: '`docker stats` streams live cgroup usage — perfect for spotting memory leaks or CPU spikes in real time.'
+  - text: What does `docker logs --since=10m --tail=200 -f <c>` do?
+    options:
+      - Follows logs for 10 minutes
+      - Shows the last 200 lines from the last 10 minutes and follows new ones
+      - Tails 10 lines every minute
+      - Truncates the log file
+    correctAnswer: 1
+    explanation: Combining time and tail filters with `-f` gives you a focused, scrollable, live log view instead of dumping the entire history.

@@ -13,9 +13,9 @@ export default async function AdminCoursesPage() {
 
   return (
     <main className="flex-1 bg-gray-50">
-      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-10">
+      <div className="mx-auto max-w-4xl space-y-10 px-4 py-12 sm:px-6 lg:px-8">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Admin</p>
+          <p className="text-sm font-semibold tracking-[0.2em] text-blue-600 uppercase">Admin</p>
           <h1 className="mt-3 text-4xl font-bold text-slate-900">Courses</h1>
         </div>
 

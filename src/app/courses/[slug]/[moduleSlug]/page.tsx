@@ -23,7 +23,11 @@ export default async function ModuleDetailPage({ params }: ModuleDetailPageProps
   const moduleRecord = await prisma.module.findFirst({
     where: { slug: moduleSlug, course: { slug } },
     include: {
-      course: { include: { modules: { orderBy: { order: "asc" }, select: { slug: true, order: true, title: true } } } },
+      course: {
+        include: {
+          modules: { orderBy: { order: "asc" }, select: { slug: true, order: true, title: true } },
+        },
+      },
       lessons: { orderBy: { order: "asc" } },
     },
   });
@@ -60,18 +64,22 @@ export default async function ModuleDetailPage({ params }: ModuleDetailPageProps
   const nextModule = moduleRecord.course.modules.find((m) => m.order === moduleRecord.order + 1);
 
   // Pick a "resume" lesson — first uncompleted
-  const resumeLesson = moduleRecord.lessons.find((l) => !completedIds.has(l.id)) ?? moduleRecord.lessons[0];
+  const resumeLesson =
+    moduleRecord.lessons.find((l) => !completedIds.has(l.id)) ?? moduleRecord.lessons[0];
 
   return (
     <main className="flex-1 bg-slate-50">
       <section className={`${theme.heroClass} text-white`}>
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <nav className="flex flex-wrap items-center gap-2 text-sm text-white/70">
-            <Link href="/courses" className="hover:text-white transition">
+            <Link href="/courses" className="transition hover:text-white">
               Courses
             </Link>
             <span>/</span>
-            <Link href={`/courses/${moduleRecord.course.slug}`} className="hover:text-white transition">
+            <Link
+              href={`/courses/${moduleRecord.course.slug}`}
+              className="transition hover:text-white"
+            >
               {moduleRecord.course.title}
             </Link>
             <span>/</span>
@@ -82,7 +90,7 @@ export default async function ModuleDetailPage({ params }: ModuleDetailPageProps
             <div className="max-w-3xl">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="text-4xl">{theme.icon}</span>
-                <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-[0.25em]">
+                <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold tracking-[0.25em] uppercase">
                   Module {moduleRecord.order} of {moduleRecord.course.modules.length}
                 </span>
                 <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium">
@@ -93,7 +101,9 @@ export default async function ModuleDetailPage({ params }: ModuleDetailPageProps
                 </span>
               </div>
               <h1 className="mt-5 text-4xl font-extrabold sm:text-5xl">{moduleRecord.title}</h1>
-              <p className="mt-4 text-base leading-8 text-white/80 sm:text-lg">{moduleRecord.description}</p>
+              <p className="mt-4 text-base leading-8 text-white/80 sm:text-lg">
+                {moduleRecord.description}
+              </p>
 
               {session && moduleRecord.lessons.length > 0 ? (
                 <div className="mt-6 max-w-lg">
@@ -141,7 +151,10 @@ export default async function ModuleDetailPage({ params }: ModuleDetailPageProps
                   {done ? "✓" : lesson.order}
                 </span>
                 <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                  <div className="h-1.5 w-full" style={{ backgroundColor: done ? "#10b981" : theme.color }} />
+                  <div
+                    className="h-1.5 w-full"
+                    style={{ backgroundColor: done ? "#10b981" : theme.color }}
+                  />
                   <div className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-start gap-4">
                       <span
@@ -151,12 +164,14 @@ export default async function ModuleDetailPage({ params }: ModuleDetailPageProps
                         {done ? "✓" : lesson.order}
                       </span>
                       <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        <p className="text-xs font-semibold tracking-[0.2em] text-slate-500 uppercase">
                           Lesson {lesson.order}
                         </p>
                         <h2 className="mt-2 text-xl font-bold text-slate-900">{lesson.title}</h2>
                         <div className="mt-3 flex flex-wrap gap-2">
-                          <span className={`rounded-full px-3 py-1 text-sm font-medium ${theme.badgeClass}`}>
+                          <span
+                            className={`rounded-full px-3 py-1 text-sm font-medium ${theme.badgeClass}`}
+                          >
                             ⏱ {readingTime(lesson.content)}
                           </span>
                           {done ? (
@@ -188,7 +203,7 @@ export default async function ModuleDetailPage({ params }: ModuleDetailPageProps
                 href={`/courses/${moduleRecord.course.slug}/${prevModule.slug}`}
                 className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 hover:shadow-md"
               >
-                <p className="text-xs uppercase tracking-wider text-slate-400">← Previous module</p>
+                <p className="text-xs tracking-wider text-slate-400 uppercase">← Previous module</p>
                 <p className="mt-1 font-semibold text-slate-900">{prevModule.title}</p>
               </Link>
             ) : (
@@ -200,7 +215,7 @@ export default async function ModuleDetailPage({ params }: ModuleDetailPageProps
                 className="rounded-2xl border border-transparent p-5 text-right text-white shadow-sm transition hover:shadow-md"
                 style={{ backgroundColor: theme.color }}
               >
-                <p className="text-xs uppercase tracking-wider opacity-80">Next module →</p>
+                <p className="text-xs tracking-wider uppercase opacity-80">Next module →</p>
                 <p className="mt-1 font-semibold">{nextModule.title}</p>
               </Link>
             ) : null}

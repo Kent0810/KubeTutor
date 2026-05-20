@@ -66,16 +66,19 @@ model Lesson {
 
   module   Module         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   progress UserProgress[]
+  quizzes  Quiz[]
 
   @@unique([moduleId, slug])
 }
 
 model Quiz {
-  id       String @id @default(cuid())
+  id       String  @id @default(cuid())
   title    String
-  moduleId String
+  moduleId String?
+  lessonId String?
 
-  module    Module       @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  module    Module?      @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  lesson    Lesson?      @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   questions Question[]
   results   QuizResult[]
 }

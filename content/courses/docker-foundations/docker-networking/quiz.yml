@@ -1,0 +1,34 @@
+title: Docker Networking — Quiz
+questions:
+  - text: Why should you create a user-defined bridge network instead of using the default `bridge`?
+    options:
+      - It's faster
+      - Container-name DNS works
+      - It uses less memory
+      - It enables IPv6 by default
+    correctAnswer: 1
+    explanation: User-defined bridges give you automatic DNS resolution between containers by name. The default `bridge` only supports IP-based connectivity.
+  - text: What does `docker run -p 8080:80` do?
+    options:
+      - Maps container port 8080 → host port 80
+      - Maps host port 8080 → container port 80
+      - Exposes port 80 internally
+      - Both ports on both sides
+    correctAnswer: 1
+    explanation: The syntax is always `host:container`. So `-p 8080:80` publishes the container's port 80 on the host's port 8080.
+  - text: What does the `EXPOSE 8080` directive in a Dockerfile actually do?
+    options:
+      - Opens port 8080 on the host
+      - Documents the intended port; doesn't publish it
+      - Forces a port mapping
+      - Configures NAT
+    correctAnswer: 1
+    explanation: '`EXPOSE` is metadata — it''s documentation and a hint for `-P`. It does **not** publish a port. You still need `-p`.'
+  - text: You want to bind a container's port only on the local machine (not the LAN). Which is correct?
+    options:
+      - '`-p 8080:80`'
+      - '`-p 127.0.0.1:8080:80`'
+      - '`-p 0.0.0.0:8080:80`'
+      - '`-p :8080:80`'
+    correctAnswer: 1
+    explanation: Prefixing the host IP restricts the publish to that interface. `127.0.0.1` is loopback only — invisible to the LAN.

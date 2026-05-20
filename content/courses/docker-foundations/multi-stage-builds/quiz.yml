@@ -1,0 +1,34 @@
+title: Multi-stage Builds — Quiz
+questions:
+  - text: What ends up in the final published image from a multi-stage Dockerfile?
+    options:
+      - All stages concatenated
+      - Only the last stage
+      - Only the first stage
+      - Whichever stage is largest
+    correctAnswer: 1
+    explanation: Only the final `FROM` stage is committed to the published image unless you build with `--target`. Earlier stages are discarded.
+  - text: Which file makes the biggest difference to build context size and cache stability?
+    options:
+      - '`Dockerfile`'
+      - '`.dockerignore`'
+      - '`docker-compose.yaml`'
+      - '`README.md`'
+    correctAnswer: 1
+    explanation: '`.dockerignore` keeps `.git`, `node_modules`, build artifacts, and logs out of the build context — usually reducing it by 10× or more and stabilising the cache.'
+  - text: Which BuildKit feature caches package manager downloads across builds without bloating the image?
+    options:
+      - '`COPY --link`'
+      - '`RUN --mount=type=cache,target=/root/.cache`'
+      - '`ARG CACHE`'
+      - '`HEALTHCHECK`'
+    correctAnswer: 1
+    explanation: '`--mount=type=cache` mounts a persistent cache directory only during the `RUN`, so it never becomes part of the image layer.'
+  - text: You want to build a CI test image and a production image from the same Dockerfile. What's the cleanest approach?
+    options:
+      - Two Dockerfiles
+      - One Dockerfile with named stages built with `--target test` and `--target prod`
+      - Use `docker compose`
+      - Bash heredoc
+    correctAnswer: 1
+    explanation: Named stages plus `--target` keep test and production in lockstep using the same base layers, eliminating drift between environments.

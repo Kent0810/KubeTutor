@@ -19,7 +19,7 @@ export default function FlashcardsClient({ flashcards }: FlashcardsClientProps) 
 
   const topics = useMemo(
     () => ["All", ...Array.from(new Set(flashcards.map((card) => card.topic)))],
-    [flashcards],
+    [flashcards]
   );
 
   const filteredFlashcards = useMemo(
@@ -27,14 +27,12 @@ export default function FlashcardsClient({ flashcards }: FlashcardsClientProps) 
       selectedTopic === "All"
         ? flashcards
         : flashcards.filter((card) => card.topic === selectedTopic),
-    [flashcards, selectedTopic],
+    [flashcards, selectedTopic]
   );
 
   const toggleCard = (id: string) => {
     setFlippedIds((current) =>
-      current.includes(id)
-        ? current.filter((value) => value !== id)
-        : [...current, id],
+      current.includes(id) ? current.filter((value) => value !== id) : [...current, id]
     );
   };
 
@@ -84,12 +82,10 @@ export default function FlashcardsClient({ flashcards }: FlashcardsClientProps) 
                   style={{ backfaceVisibility: "hidden" }}
                 >
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">
+                    <p className="text-xs font-semibold tracking-[0.2em] text-blue-600 uppercase">
                       {card.topic}
                     </p>
-                    <h3 className="mt-4 text-xl font-semibold text-slate-900">
-                      {card.question}
-                    </h3>
+                    <h3 className="mt-4 text-xl font-semibold text-slate-900">{card.question}</h3>
                   </div>
                   <p className="text-sm text-slate-500">Click to reveal the answer</p>
                 </div>
@@ -102,7 +98,7 @@ export default function FlashcardsClient({ flashcards }: FlashcardsClientProps) 
                   }}
                 >
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
+                    <p className="text-xs font-semibold tracking-[0.2em] text-blue-300 uppercase">
                       Answer
                     </p>
                     <p className="mt-4 text-base leading-7 text-slate-100">{card.answer}</p>

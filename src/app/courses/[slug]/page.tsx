@@ -55,7 +55,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
         const t = readingTime(l.content).match(/(\d+)/);
         return s + (t ? parseInt(t[1], 10) : 0);
       }, 0),
-    0,
+    0
   );
 
   const completedCount = completedIds.size;
@@ -77,7 +77,10 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
     <main className="flex-1 bg-slate-50">
       <section className={`${theme.heroClass} text-white`}>
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-          <Link href="/courses" className="inline-flex text-sm font-semibold text-white/80 transition hover:text-white">
+          <Link
+            href="/courses"
+            className="inline-flex text-sm font-semibold text-white/80 transition hover:text-white"
+          >
             ← Back to courses
           </Link>
 
@@ -85,12 +88,14 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
             <div className="max-w-3xl">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="text-4xl">{theme.icon}</span>
-                <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-[0.25em]">
+                <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold tracking-[0.25em] uppercase">
                   {theme.label} track
                 </span>
               </div>
               <h1 className="mt-5 text-4xl font-extrabold sm:text-5xl">{course.title}</h1>
-              <p className="mt-4 text-base leading-8 text-white/80 sm:text-lg">{course.description}</p>
+              <p className="mt-4 text-base leading-8 text-white/80 sm:text-lg">
+                {course.description}
+              </p>
 
               {session && allLessonIds.length > 0 ? (
                 <div className="mt-6 max-w-lg">
@@ -101,13 +106,21 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                     </span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-white/15">
-                    <div className="h-full rounded-full bg-white transition-all" style={{ width: `${overallPct}%` }} />
+                    <div
+                      className="h-full rounded-full bg-white transition-all"
+                      style={{ width: `${overallPct}%` }}
+                    />
                   </div>
                   <Link
                     href={resumeHref}
                     className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 shadow transition hover:bg-slate-100"
                   >
-                    {allDone ? "Review from the beginning" : completedCount > 0 ? "Resume learning" : "Start course"} →
+                    {allDone
+                      ? "Review from the beginning"
+                      : completedCount > 0
+                        ? "Resume learning"
+                        : "Start course"}{" "}
+                    →
                   </Link>
                 </div>
               ) : !session ? (
@@ -122,15 +135,15 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
 
             <div className="grid gap-3 sm:grid-cols-3 lg:min-w-[26rem]">
               <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
-                <p className="text-xs uppercase tracking-wider text-white/70">Modules</p>
+                <p className="text-xs tracking-wider text-white/70 uppercase">Modules</p>
                 <p className="mt-2 text-2xl font-bold">{course.modules.length}</p>
               </div>
               <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
-                <p className="text-xs uppercase tracking-wider text-white/70">Lessons</p>
+                <p className="text-xs tracking-wider text-white/70 uppercase">Lessons</p>
                 <p className="mt-2 text-2xl font-bold">{lessonCount}</p>
               </div>
               <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
-                <p className="text-xs uppercase tracking-wider text-white/70">Reading</p>
+                <p className="text-xs tracking-wider text-white/70 uppercase">Reading</p>
                 <p className="mt-2 text-2xl font-bold">~{totalReadingMinutes}m</p>
               </div>
             </div>
@@ -143,8 +156,11 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
           {course.modules.map((module) => {
             const moduleCompleted = module.lessons.filter((l) => completedIds.has(l.id)).length;
             const modulePct =
-              module.lessons.length > 0 ? Math.round((moduleCompleted / module.lessons.length) * 100) : 0;
-            const moduleDone = module.lessons.length > 0 && moduleCompleted === module.lessons.length;
+              module.lessons.length > 0
+                ? Math.round((moduleCompleted / module.lessons.length) * 100)
+                : 0;
+            const moduleDone =
+              module.lessons.length > 0 && moduleCompleted === module.lessons.length;
 
             return (
               <details
@@ -163,11 +179,13 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                         {moduleDone ? "✓" : module.order}
                       </span>
                       <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">
+                        <p className="text-xs font-semibold tracking-[0.25em] text-slate-500 uppercase">
                           Module {module.order}
                         </p>
                         <h2 className="mt-2 text-2xl font-bold text-slate-900">{module.title}</h2>
-                        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">{module.description}</p>
+                        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
+                          {module.description}
+                        </p>
 
                         {session && module.lessons.length > 0 ? (
                           <div className="mt-4 flex max-w-sm items-center gap-3">
@@ -186,11 +204,19 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                     </div>
 
                     <div className="flex items-center gap-3 self-start">
-                      <span className={`rounded-full px-3 py-1 text-sm font-semibold ${theme.badgeClass}`}>
+                      <span
+                        className={`rounded-full px-3 py-1 text-sm font-semibold ${theme.badgeClass}`}
+                      >
                         {module._count.lessons} lessons
                       </span>
                       <span className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition group-open:rotate-180">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          className="h-5 w-5"
+                        >
                           <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </span>
@@ -211,13 +237,15 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                           <div className="flex items-center gap-4">
                             <span
                               className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-                                done ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"
+                                done
+                                  ? "bg-emerald-100 text-emerald-700"
+                                  : "bg-slate-100 text-slate-600"
                               }`}
                             >
                               {done ? "✓" : lesson.order}
                             </span>
                             <div>
-                              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                              <p className="text-xs font-semibold tracking-[0.2em] text-slate-500 uppercase">
                                 Lesson {lesson.order} · ⏱ {readingTime(lesson.content)}
                               </p>
                               <p className="mt-1 font-semibold text-slate-900">{lesson.title}</p>

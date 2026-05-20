@@ -60,7 +60,7 @@ export default function SignupForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="KubeTutor Learner"
-          className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+          className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
         />
       </label>
 
@@ -72,7 +72,7 @@ export default function SignupForm() {
           onChange={(e) => setEmail(e.target.value)}
           required
           placeholder="you@example.com"
-          className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+          className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
         />
       </label>
 
@@ -84,7 +84,7 @@ export default function SignupForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
           placeholder="At least 8 characters"
-          className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+          className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
         />
       </label>
 
@@ -96,7 +96,7 @@ export default function SignupForm() {
           onChange={(e) => setConfirm(e.target.value)}
           required
           placeholder="Repeat your password"
-          className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+          className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
         />
       </label>
 

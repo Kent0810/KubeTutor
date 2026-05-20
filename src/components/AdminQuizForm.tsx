@@ -49,9 +49,7 @@ export default function AdminQuizForm() {
   }, [courseId]);
 
   const updateQuestion = (idx: number, updates: Partial<QuestionInput>) => {
-    setQuestions((prev) =>
-      prev.map((q, i) => (i === idx ? { ...q, ...updates } : q))
-    );
+    setQuestions((prev) => prev.map((q, i) => (i === idx ? { ...q, ...updates } : q)));
   };
 
   const updateOption = (qIdx: number, optIdx: number, value: string) => {
@@ -105,7 +103,10 @@ export default function AdminQuizForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-8 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"
+    >
       <div className="grid gap-6 md:grid-cols-2">
         <label className="space-y-2">
           <span className="text-sm font-semibold text-slate-700">Course</span>
@@ -113,9 +114,13 @@ export default function AdminQuizForm() {
             value={courseId}
             onChange={(e) => setCourseId(e.target.value)}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
           >
-            {courses.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
+            {courses.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.title}
+              </option>
+            ))}
           </select>
         </label>
 
@@ -126,11 +131,17 @@ export default function AdminQuizForm() {
             onChange={(e) => setModuleId(e.target.value)}
             required
             disabled={modules.length === 0}
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-400"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-400"
           >
-            {modules.length === 0
-              ? <option value="">No modules yet</option>
-              : modules.map((m) => <option key={m.id} value={m.id}>{m.title}</option>)}
+            {modules.length === 0 ? (
+              <option value="">No modules yet</option>
+            ) : (
+              modules.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.title}
+                </option>
+              ))
+            )}
           </select>
         </label>
 
@@ -140,7 +151,7 @@ export default function AdminQuizForm() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             placeholder="Module 1 Quiz"
           />
         </label>
@@ -148,9 +159,7 @@ export default function AdminQuizForm() {
 
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-slate-900">
-            Questions ({questions.length})
-          </h3>
+          <h3 className="text-lg font-semibold text-slate-900">Questions ({questions.length})</h3>
           <button
             type="button"
             onClick={() => setQuestions((prev) => [...prev, emptyQuestion()])}
@@ -161,7 +170,7 @@ export default function AdminQuizForm() {
         </div>
 
         {questions.map((q, qIdx) => (
-          <div key={qIdx} className="rounded-2xl border border-slate-200 bg-slate-50 p-6 space-y-4">
+          <div key={qIdx} className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-6">
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold text-slate-700">Question {qIdx + 1}</p>
               {questions.length > 1 && (
@@ -181,13 +190,15 @@ export default function AdminQuizForm() {
                 value={q.text}
                 onChange={(e) => updateQuestion(qIdx, { text: e.target.value })}
                 required
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                 placeholder="What does docker ps do?"
               />
             </label>
 
             <div className="space-y-2">
-              <span className="text-xs font-semibold text-slate-600">Options (select the correct answer)</span>
+              <span className="text-xs font-semibold text-slate-600">
+                Options (select the correct answer)
+              </span>
               {q.options.map((opt, optIdx) => (
                 <div key={optIdx} className="flex items-center gap-3">
                   <input
@@ -201,7 +212,7 @@ export default function AdminQuizForm() {
                     value={opt}
                     onChange={(e) => updateOption(qIdx, optIdx, e.target.value)}
                     required
-                    className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                    className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                     placeholder={`Option ${String.fromCharCode(65 + optIdx)}`}
                   />
                 </div>
@@ -213,7 +224,7 @@ export default function AdminQuizForm() {
               <input
                 value={q.explanation}
                 onChange={(e) => updateQuestion(qIdx, { explanation: e.target.value })}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                 placeholder="Brief explanation shown after submission…"
               />
             </label>
@@ -222,7 +233,9 @@ export default function AdminQuizForm() {
       </div>
 
       {status ? (
-        <div className={`rounded-2xl px-4 py-3 text-sm ${status.type === "success" ? "border border-emerald-200 bg-emerald-50 text-emerald-700" : "border border-rose-200 bg-rose-50 text-rose-700"}`}>
+        <div
+          className={`rounded-2xl px-4 py-3 text-sm ${status.type === "success" ? "border border-emerald-200 bg-emerald-50 text-emerald-700" : "border border-rose-200 bg-rose-50 text-rose-700"}`}
+        >
           {status.message}
         </div>
       ) : null}

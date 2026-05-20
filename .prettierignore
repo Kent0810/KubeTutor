@@ -1,0 +1,7 @@
+.next
+node_modules
+prisma/migrations
+content
+public
+*.lock
+tsconfig.tsbuildinfo

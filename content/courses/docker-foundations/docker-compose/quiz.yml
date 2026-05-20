@@ -1,0 +1,34 @@
+title: Docker Compose — Quiz
+questions:
+  - text: How can a `web` service wait for Postgres to be **ready** (not just started) in Compose?
+    options:
+      - '`depends_on: [postgres]`'
+      - '`depends_on: { postgres: { condition: service_healthy } }`'
+      - Use a `sleep` in the web entrypoint
+      - Compose doesn't support this
+    correctAnswer: 1
+    explanation: 'The long-form `depends_on` with `condition: service_healthy` waits for the dependency''s healthcheck to pass before starting the service.'
+  - text: What does `docker compose down -v` do that `docker compose down` does not?
+    options:
+      - Stops verbose logging
+      - Removes named volumes
+      - Verifies image signatures
+      - Validates the compose file
+    correctAnswer: 1
+    explanation: '`-v` deletes named volumes too. Without it, your data survives `down` and is reattached on the next `up`.'
+  - text: Two services in the same Compose project want to talk to each other. What hostname does `web` use to reach `db`?
+    options:
+      - '`localhost`'
+      - '`db`'
+      - '`db.compose.local`'
+      - The container's IP
+    correctAnswer: 1
+    explanation: Compose creates a default network and gives each service a DNS name equal to its service name.
+  - text: Where do per-developer overrides typically live?
+    options:
+      - '`compose.dev.yaml`'
+      - '`compose.override.yaml` (auto-merged)'
+      - Inside the main `compose.yaml`
+      - Environment variables only
+    correctAnswer: 1
+    explanation: Compose automatically merges `compose.override.yaml` on top of `compose.yaml` without an explicit `-f` flag.

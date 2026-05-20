@@ -1,0 +1,34 @@
+title: Images and Containers — Quiz
+questions:
+  - text: Which Dockerfile form gives correct signal handling (so SIGTERM reaches your app)?
+    options:
+      - '`CMD node server.js`'
+      - '`CMD ["node", "server.js"]`'
+      - Either is identical
+      - Only `ENTRYPOINT` matters
+    correctAnswer: 1
+    explanation: The exec form runs the binary as PID 1 directly. The shell form wraps it in `/bin/sh -c`, which doesn't forward signals.
+  - text: Where should you store a build-time secret in a Dockerfile?
+    options:
+      - '`ENV SECRET=...`'
+      - '`ARG SECRET=...`'
+      - Neither — use `RUN --mount=type=secret`
+      - In a comment
+    correctAnswer: 2
+    explanation: '`ENV` and `ARG` are visible to anyone who can pull the image via `docker history`. BuildKit''s `--mount=type=secret` keeps secrets out of layers entirely.'
+  - text: What is the main benefit of putting `COPY package.json ./` before `COPY . .`?
+    options:
+      - Smaller final image
+      - Better layer caching when source changes
+      - Faster `docker push`
+      - Required by BuildKit
+    correctAnswer: 1
+    explanation: Dependencies change less often than source. Copying and installing them first means source-only changes don't bust the dependency cache.
+  - text: What does `FROM gcr.io/distroless/static` give you?
+    options:
+      - A full Debian userspace
+      - A shell and package manager
+      - Only the libraries needed to run a statically-linked binary
+      - An Alpine-based image
+    correctAnswer: 2
+    explanation: Distroless images contain no shell, package manager, or extras — just enough to run your app. They're tiny and have a small attack surface.

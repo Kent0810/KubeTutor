@@ -1,0 +1,3 @@
+title: "Persistent Storage"
+description: "PersistentVolumes, PersistentVolumeClaims, StorageClasses, and StatefulSets for stateful apps."
+order: 4

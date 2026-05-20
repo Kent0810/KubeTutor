@@ -1,0 +1,34 @@
+title: Docker in Production — Quiz
+questions:
+  - text: A long-startup app (JVM) keeps getting marked unhealthy and restarted. What's the right tuning?
+    options:
+      - Lower `--interval`
+      - Raise `--retries` to 100
+      - Add `--start-period=30s`
+      - Remove the healthcheck
+    correctAnswer: 2
+    explanation: '`--start-period` tells Docker to ignore probe failures during initial startup. Without it, slow-booting apps die in a crash loop.'
+  - text: What restart policy do you want for a typical production service?
+    options:
+      - '`no`'
+      - '`on-failure`'
+      - '`always`'
+      - '`unless-stopped`'
+    correctAnswer: 3
+    explanation: '`unless-stopped` restarts on crash and on host reboot but respects manual stops. The other policies either don''t auto-recover or fight you when you intentionally stop.'
+  - text: What happens if a container hits its `--memory` limit?
+    options:
+      - Docker logs a warning
+      - The container is paused
+      - The kernel OOM-kills a process inside it (often the main PID)
+      - Memory is swapped out
+    correctAnswer: 2
+    explanation: Memory limits are enforced by the kernel cgroup. When you exceed them, the OOM-killer fires inside the container.
+  - text: What's the biggest risk of leaving Docker's default log driver unconfigured in production?
+    options:
+      - Logs are encrypted
+      - Disks fill up because JSON logs grow forever
+      - Logs are missing timestamps
+      - Logs aren't shipped to stdout
+    correctAnswer: 1
+    explanation: The default `json-file` driver has no rotation. Set `max-size` and `max-file`, or ship logs to a central system before your disks fill up at 3 AM.

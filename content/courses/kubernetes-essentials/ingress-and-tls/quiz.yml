@@ -1,0 +1,34 @@
+title: Ingress and TLS — Quiz
+questions:
+  - text: What's the relationship between an `Ingress` resource and an Ingress controller?
+    options:
+      - Same thing
+      - Resource declares rules; controller enforces them
+      - Controller is optional
+      - Resource includes the controller binary
+    correctAnswer: 1
+    explanation: The Ingress *resource* is desired config; the Ingress *controller* (NGINX, Traefik, etc.) is the running component that actually accepts traffic.
+  - text: cert-manager `HTTP-01` challenge requires...
+    options:
+      - DNS API credentials
+      - Port 80 reachable from the internet
+      - TLS client certs
+      - Cluster admin access
+    correctAnswer: 1
+    explanation: HTTP-01 proves domain control by serving a file at `http://<domain>/.well-known/...`. The Let's Encrypt servers must reach you on port 80.
+  - text: When should you choose **DNS-01** over **HTTP-01**?
+    options:
+      - For wildcard certificates or non-internet-reachable clusters
+      - For faster issuance
+      - Always
+      - Never
+    correctAnswer: 0
+    explanation: DNS-01 is the only way to issue wildcard certs (`*.example.com`) and works for private clusters because it proves domain control via DNS, not HTTP.
+  - text: What's the modern, more flexible successor to the Ingress API?
+    options:
+      - IngressV2
+      - Gateway API
+      - ServiceMesh
+      - ExternalDNS
+    correctAnswer: 1
+    explanation: Gateway API splits the responsibilities of an Ingress across multiple resources (Gateway, HTTPRoute, etc.), enabling clean multi-tenant and protocol-aware routing.

@@ -1,15 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await getSession();
 
   try {
-    const { answers } = await request.json() as { answers: Record<string, number> };
+    const { answers } = (await request.json()) as { answers: Record<string, number> };
 
     const quiz = await prisma.quiz.findUnique({
       where: { id },

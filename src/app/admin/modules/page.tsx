@@ -16,9 +16,9 @@ export default async function AdminModulesPage() {
 
   return (
     <main className="flex-1 bg-gray-50">
-      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-10">
+      <div className="mx-auto max-w-4xl space-y-10 px-4 py-12 sm:px-6 lg:px-8">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Admin</p>
+          <p className="text-sm font-semibold tracking-[0.2em] text-blue-600 uppercase">Admin</p>
           <h1 className="mt-3 text-4xl font-bold text-slate-900">Modules</h1>
         </div>
 
@@ -43,7 +43,9 @@ export default async function AdminModulesPage() {
                   <div>
                     <p className="text-xs font-semibold text-blue-600">{m.course.title}</p>
                     <p className="font-semibold text-slate-900">{m.title}</p>
-                    <p className="text-xs text-slate-500">/{m.slug} · {m._count.lessons} lessons</p>
+                    <p className="text-xs text-slate-500">
+                      /{m.slug} · {m._count.lessons} lessons
+                    </p>
                   </div>
                   <span className="text-sm text-slate-400">Order: {m.order}</span>
                 </div>

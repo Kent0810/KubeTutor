@@ -1,0 +1,34 @@
+title: ConfigMaps and Secrets — Quiz
+questions:
+  - text: You mount a ConfigMap as a volume and update it. The Pod sees the change because...
+    options:
+      - Kubelet rewrites the file (~60s lag)
+      - The Pod restarts
+      - Never — Pods must restart
+      - The container image is rebuilt
+    correctAnswer: 0
+    explanation: Volume-mounted ConfigMaps are projected by the kubelet and refreshed in place with a short delay. Env-var injections, however, never update without a restart.
+  - text: Kubernetes Secrets are stored in etcd as...
+    options:
+      - AES-256 encrypted by default
+      - Base64-encoded only, unless you configure encryption at rest
+      - Plaintext
+      - TLS-encrypted only
+    correctAnswer: 1
+    explanation: By default Secrets are base64 — not encryption. Enable `EncryptionConfiguration` with a KMS provider for real encryption at rest.
+  - text: Best practice for sourcing Secrets in modern clusters?
+    options:
+      - Keep them in git
+      - Use External Secrets Operator to sync from Vault/AWS/GCP
+      - Bake into images
+      - Pass via command-line args
+    correctAnswer: 1
+    explanation: Keep the source of truth in a real secret manager. ESO syncs to native K8s Secrets so apps don't need vault SDKs.
+  - text: ConfigMap size limit?
+    options:
+      - No limit
+      - 1 MiB
+      - 10 MiB
+      - Same as etcd's value limit (1.5 MB)
+    correctAnswer: 1
+    explanation: ConfigMaps (and Secrets) are limited to 1 MiB. Split large configs or mount them via a Volume backed by a different storage class.

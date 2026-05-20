@@ -1,0 +1,34 @@
+title: Pods and Workloads — Quiz
+questions:
+  - text: Which of these is true about containers in the **same** Pod?
+    options:
+      - They have separate IP addresses
+      - They share the network namespace and reach each other via `localhost`
+      - They're on different nodes
+      - They have separate hostnames
+    correctAnswer: 1
+    explanation: All containers in a Pod share a network namespace, so they see the same IP and the same loopback interface — they talk via `localhost:<port>`.
+  - text: What is the difference between **liveness** and **readiness** probes?
+    options:
+      - No difference
+      - Liveness restarts the container on failure; readiness removes it from Service endpoints
+      - Readiness restarts; liveness removes
+      - Liveness only runs once
+    correctAnswer: 1
+    explanation: Liveness failures kill and restart the container. Readiness failures keep the container running but stop sending it traffic until it recovers.
+  - text: Why do production workloads use a Deployment rather than a raw Pod?
+    options:
+      - Deployments are faster
+      - Raw Pods are not rescheduled if their node fails
+      - Pods can't have labels
+      - Pods don't support images
+    correctAnswer: 1
+    explanation: A bare Pod has no controller above it. If its node dies, it's gone forever. A Deployment (or other controller) ensures the desired Pod count is maintained.
+  - text: What does the `requests` field on a container drive?
+    options:
+      - The hard upper bound on usage
+      - Scheduling decisions and resource reservations
+      - Healthcheck cadence
+      - Image pull priority
+    correctAnswer: 1
+    explanation: '`requests` is what the scheduler uses to place the Pod and what the kernel uses to guarantee minimum resources. `limits` is the hard cap.'

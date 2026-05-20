@@ -93,9 +93,7 @@ export default function Navbar() {
         <div className="hidden items-center gap-3 md:flex">
           {loading ? null : user ? (
             <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-slate-700">
-                {user.name ?? user.email}
-              </span>
+              <span className="text-sm font-medium text-slate-700">{user.name ?? user.email}</span>
               <button
                 type="button"
                 onClick={handleLogout}

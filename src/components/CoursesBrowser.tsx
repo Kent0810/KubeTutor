@@ -17,8 +17,14 @@ export type CourseCardData = {
 };
 
 const LEVELS: Record<string, { label: string; color: string }> = {
-  "docker-foundations": { label: "Beginner → Intermediate", color: "bg-emerald-100 text-emerald-700" },
-  "kubernetes-essentials": { label: "Intermediate → Advanced", color: "bg-amber-100 text-amber-800" },
+  "docker-foundations": {
+    label: "Beginner → Intermediate",
+    color: "bg-emerald-100 text-emerald-700",
+  },
+  "kubernetes-essentials": {
+    label: "Intermediate → Advanced",
+    color: "bg-amber-100 text-amber-800",
+  },
 };
 
 export default function CoursesBrowser({ courses }: { courses: CourseCardData[] }) {
@@ -31,7 +37,7 @@ export default function CoursesBrowser({ courses }: { courses: CourseCardData[] 
       (c) =>
         c.title.toLowerCase().includes(q) ||
         c.description.toLowerCase().includes(q) ||
-        c.modulePreview.some((m) => m.title.toLowerCase().includes(q)),
+        c.modulePreview.some((m) => m.title.toLowerCase().includes(q))
     );
   }, [query, courses]);
 
@@ -75,7 +81,10 @@ export default function CoursesBrowser({ courses }: { courses: CourseCardData[] 
         <div className="grid gap-6 lg:grid-cols-2">
           {filtered.map((course) => {
             const theme = getTrackTheme(course.slug);
-            const level = LEVELS[course.slug] ?? { label: "All levels", color: "bg-slate-100 text-slate-700" };
+            const level = LEVELS[course.slug] ?? {
+              label: "All levels",
+              color: "bg-slate-100 text-slate-700",
+            };
 
             return (
               <article
@@ -89,10 +98,14 @@ export default function CoursesBrowser({ courses }: { courses: CourseCardData[] 
                       <span className="text-4xl">{theme.icon}</span>
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${theme.badgeClass}`}>
+                          <span
+                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${theme.badgeClass}`}
+                          >
                             {theme.label}
                           </span>
-                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${level.color}`}>
+                          <span
+                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${level.color}`}
+                          >
                             {level.label}
                           </span>
                         </div>
@@ -109,7 +122,7 @@ export default function CoursesBrowser({ courses }: { courses: CourseCardData[] 
 
                   {course.highlights.length > 0 ? (
                     <div className="mt-5">
-                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                      <p className="text-xs font-bold tracking-[0.18em] text-slate-400 uppercase">
                         What you&apos;ll learn
                       </p>
                       <div className="mt-2 flex flex-wrap gap-2">

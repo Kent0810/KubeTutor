@@ -15,9 +15,9 @@ export default async function AdminFlashcardsPage() {
 
   return (
     <main className="flex-1 bg-gray-50">
-      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-10">
+      <div className="mx-auto max-w-4xl space-y-10 px-4 py-12 sm:px-6 lg:px-8">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Admin</p>
+          <p className="text-sm font-semibold tracking-[0.2em] text-blue-600 uppercase">Admin</p>
           <h1 className="mt-3 text-4xl font-bold text-slate-900">Flashcards</h1>
         </div>
 
@@ -39,7 +39,7 @@ export default async function AdminFlashcardsPage() {
                   key={card.id}
                   className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                 >
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">
+                  <p className="text-xs font-semibold tracking-[0.2em] text-blue-600 uppercase">
                     {card.topic}
                   </p>
                   <p className="mt-1 font-semibold text-slate-900">{card.question}</p>

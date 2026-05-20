@@ -6,7 +6,7 @@ export async function GET(request: Request) {
   const moduleId = url.searchParams.get("moduleId");
 
   const quizzes = await prisma.quiz.findMany({
-    where: moduleId ? { moduleId } : undefined,
+    where: moduleId ? { moduleId } : { moduleId: { not: null } },
     include: {
       _count: { select: { questions: true } },
       module: { include: { course: true } },
@@ -34,17 +34,19 @@ export async function POST(request: Request) {
         moduleId,
         questions: questions
           ? {
-              create: questions.map((q: {
-                text: string;
-                options: string[];
-                correctAnswer: number;
-                explanation?: string;
-              }) => ({
-                text: q.text,
-                options: q.options,
-                correctAnswer: q.correctAnswer,
-                explanation: q.explanation ?? null,
-              })),
+              create: questions.map(
+                (q: {
+                  text: string;
+                  options: string[];
+                  correctAnswer: number;
+                  explanation?: string;
+                }) => ({
+                  text: q.text,
+                  options: q.options,
+                  correctAnswer: q.correctAnswer,
+                  explanation: q.explanation ?? null,
+                })
+              ),
             }
           : undefined,
       },

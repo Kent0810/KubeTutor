@@ -50,7 +50,10 @@ export function readingTime(text: string): string {
 }
 
 export function totalLessons(
-  modules: ReadonlyArray<{ lessons?: ReadonlyArray<unknown>; _count?: { lessons?: number } }>,
+  modules: ReadonlyArray<{ lessons?: ReadonlyArray<unknown>; _count?: { lessons?: number } }>
 ): number {
-  return modules.reduce((sum, module) => sum + (module.lessons?.length ?? module._count?.lessons ?? 0), 0);
+  return modules.reduce(
+    (sum, module) => sum + (module.lessons?.length ?? module._count?.lessons ?? 0),
+    0
+  );
 }

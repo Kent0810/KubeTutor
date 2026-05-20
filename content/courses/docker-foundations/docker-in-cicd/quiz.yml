@@ -1,0 +1,34 @@
+title: Docker in CI/CD — Quiz
+questions:
+  - text: What's the simplest way to make GitHub Actions Docker builds 5–10× faster on repeated runs?
+    options:
+      - Use bigger runners
+      - Configure `cache-from`/`cache-to` with `type=gha,mode=max`
+      - Disable BuildKit
+      - Use `--no-cache=false`
+    correctAnswer: 1
+    explanation: GitHub Actions cache (`type=gha`) backed by BuildKit lets layers persist across runs in the same repo.
+  - text: How should you tag images so deployments are reproducible?
+    options:
+      - Always `latest`
+      - Immutable tag (commit SHA) plus a moving tag (`latest`, `v1`)
+      - Random UUID
+      - Tag is unnecessary
+    correctAnswer: 1
+    explanation: Deploy by **digest** or the immutable SHA tag so you know exactly what's running. Moving tags are convenient pointers, not deployment targets.
+  - text: Which tool signs and verifies container images in the Sigstore ecosystem?
+    options:
+      - '`cosign`'
+      - '`docker sign`'
+      - '`gpg`'
+      - '`notation`'
+    correctAnswer: 0
+    explanation: '`cosign` is the de facto Sigstore signer/verifier. Pair it with an admission policy controller for end-to-end supply-chain assurance.'
+  - text: Which is a real supply-chain risk in CI workflows?
+    options:
+      - Using `actions/checkout@v4`
+      - Pinning to a tag instead of a SHA
+      - Using Ubuntu runners
+      - Running tests in parallel
+    correctAnswer: 1
+    explanation: Tags can be moved. Pinning third-party actions to a SHA is the only way to defend against a maintainer (or attacker) repointing a tag.

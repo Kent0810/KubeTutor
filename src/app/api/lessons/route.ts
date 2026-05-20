@@ -22,7 +22,10 @@ export async function POST(request: Request) {
     const { title, content, slug, order, moduleId } = await request.json();
 
     if (!title || !content || !slug || !moduleId) {
-      return Response.json({ error: "title, content, slug, and moduleId are required." }, { status: 400 });
+      return Response.json(
+        { error: "title, content, slug, and moduleId are required." },
+        { status: 400 }
+      );
     }
 
     const lesson = await prisma.lesson.create({
@@ -32,7 +35,10 @@ export async function POST(request: Request) {
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "";
     if (msg.includes("Unique constraint")) {
-      return Response.json({ error: "A lesson with that slug already exists in this module." }, { status: 409 });
+      return Response.json(
+        { error: "A lesson with that slug already exists in this module." },
+        { status: 409 }
+      );
     }
     console.error("[POST /api/lessons]", error);
     return Response.json({ error: "Something went wrong." }, { status: 500 });

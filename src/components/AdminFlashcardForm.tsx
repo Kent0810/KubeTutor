@@ -42,7 +42,10 @@ export default function AdminFlashcardForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"
+    >
       <label className="block space-y-2">
         <span className="text-sm font-semibold text-slate-700">Question</span>
         <textarea
@@ -50,7 +53,7 @@ export default function AdminFlashcardForm() {
           onChange={(event) => setQuestion(event.target.value)}
           required
           rows={3}
-          className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+          className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
           placeholder="What command lists all running containers?"
         />
       </label>
@@ -62,7 +65,7 @@ export default function AdminFlashcardForm() {
           onChange={(event) => setAnswer(event.target.value)}
           required
           rows={5}
-          className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+          className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
           placeholder="Use docker ps to list currently running containers."
         />
       </label>
@@ -72,7 +75,7 @@ export default function AdminFlashcardForm() {
         <select
           value={topic}
           onChange={(event) => setTopic(event.target.value)}
-          className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+          className="w-full rounded-2xl border border-slate-200 px-4 py-3 transition outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
         >
           <option value="Docker">Docker</option>
           <option value="Kubernetes">Kubernetes</option>
