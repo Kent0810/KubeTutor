@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getTrackTheme } from "@/lib/courseTheme";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,22 @@ const tracks = [
       "Pods, Deployments, Services, ConfigMaps, Ingress and beyond — master the orchestration layer.",
     href: "/courses",
     color: "violet",
+  },
+  {
+    emoji: "🐧",
+    title: "Linux & Shell Essentials",
+    description:
+      "Master the command line — filesystem navigation, permissions, processes, and the tools every engineer relies on daily.",
+    href: "/courses",
+    color: "orange",
+  },
+  {
+    emoji: "🔀",
+    title: "Git & DevOps Fundamentals",
+    description:
+      "From first commit to CI/CD pipelines — learn version control, branching strategies, and modern delivery practices.",
+    href: "/courses",
+    color: "emerald",
   },
 ];
 
@@ -111,7 +128,7 @@ export default async function HomePage() {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-3 lg:gap-4">
+              <div className="grid grid-cols-3 gap-3 lg:gap-4 shrink-0">
                 {[
                   { label: "Lessons Done", value: lessonsCompleted, icon: "✅", color: "from-blue-600/20 to-blue-800/10 border-blue-500/25" },
                   { label: "Quizzes Taken", value: quizzesTaken, icon: "🧠", color: "from-violet-600/20 to-violet-800/10 border-violet-500/25" },
@@ -148,7 +165,7 @@ export default async function HomePage() {
                   style={{ animationDelay: `${i * 80}ms` }}
                 >
                   <div className="flex items-start gap-4">
-                    <span className="text-4xl">{i === 0 ? "🐳" : "☸️"}</span>
+                    <span className="text-4xl">{getTrackTheme(course.slug).icon}</span>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-700 transition">{course.title}</h3>
                       <p className="mt-1.5 text-sm leading-6 text-slate-500 line-clamp-2">{course.description}</p>
@@ -261,7 +278,7 @@ export default async function HomePage() {
             </p>
             <h2 className="mt-3 text-3xl font-bold text-slate-900">Pick your path</h2>
           </div>
-          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {tracks.map((track, i) => (
               <Link
                 key={track.title}
@@ -281,7 +298,7 @@ export default async function HomePage() {
             <Link
               href="/roadmap"
               className="animate-fade-in-up group relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-900 p-8 transition hover:-translate-y-2 hover:shadow-xl hover:shadow-violet-500/20"
-              style={{ animationDelay: "240ms" }}
+              style={{ animationDelay: `${tracks.length * 120}ms` }}
             >
               <div
                 className="absolute inset-0 opacity-20"

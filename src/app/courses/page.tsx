@@ -24,6 +24,20 @@ const HIGHLIGHTS: Record<string, string[]> = {
     "Autoscaling (HPA/VPA)",
     "Observability & Helm",
   ],
+  "linux-essentials": [
+    "Filesystem & navigation",
+    "File permissions & ownership",
+    "Process management",
+    "Shell scripting basics",
+    "System monitoring",
+  ],
+  "git-and-devops": [
+    "Commits & branching",
+    "Merge & rebase strategies",
+    "CI/CD pipeline design",
+    "GitHub Actions",
+    "GitOps & ArgoCD",
+  ],
 };
 
 export default async function CoursesPage() {

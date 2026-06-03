@@ -27,6 +27,24 @@ export const TRACK_THEME = {
     icon: "☸️",
     label: "Kubernetes",
   },
+  "linux-essentials": {
+    heroClass: "bg-gradient-to-r from-orange-500 to-amber-600",
+    color: "#EA580C",
+    badgeClass: "bg-orange-100 text-orange-700",
+    mutedBadgeClass: "bg-orange-50 text-orange-700",
+    buttonClass: "bg-orange-600 text-white hover:bg-orange-700",
+    icon: "🐧",
+    label: "Linux",
+  },
+  "git-and-devops": {
+    heroClass: "bg-gradient-to-r from-emerald-500 to-teal-600",
+    color: "#059669",
+    badgeClass: "bg-emerald-100 text-emerald-700",
+    mutedBadgeClass: "bg-emerald-50 text-emerald-700",
+    buttonClass: "bg-emerald-600 text-white hover:bg-emerald-700",
+    icon: "🔀",
+    label: "Git & DevOps",
+  },
 } as const satisfies Record<string, TrackTheme>;
 
 export const DEFAULT_THEME: TrackTheme = {

@@ -1,0 +1,42 @@
+title: "CI/CD & DevOps Practices Quiz"
+questions:
+  - text: "What does DORA's 'deployment frequency' metric measure?"
+    options:
+      - "How many developers are on the team"
+      - "How often code is successfully deployed to production"
+      - "How many tests run per deployment"
+      - "The ratio of automated to manual deployments"
+    correctAnswer: 1
+    explanation: "Deployment frequency is one of the four DORA metrics that predict software delivery performance. High-performing teams deploy to production multiple times per day; low performers deploy monthly or less."
+  - text: "What does the 'fail fast' principle mean in pipeline design?"
+    options:
+      - "Pipelines should be configured to retry failed jobs immediately"
+      - "Quick checks (lint, unit tests) run before slow checks so the pipeline aborts early on obvious failures"
+      - "Deployments roll back automatically within seconds of a failure"
+      - "Build steps run concurrently so failure is detected faster"
+    correctAnswer: 1
+    explanation: "Fail fast means ordering pipeline stages by speed — cheap, fast checks first. If a linting error would cause the pipeline to fail anyway, there is no point running 10 minutes of integration tests first. Abort early, reduce cost, return feedback sooner."
+  - text: "What problem does GitOps solve that traditional CI/CD does not?"
+    options:
+      - "GitOps handles container image building; CI/CD does not"
+      - "GitOps continuously reconciles live system state with the declared state in Git, detecting and reverting drift"
+      - "GitOps runs faster pipelines than Jenkins or GitHub Actions"
+      - "GitOps eliminates the need for automated testing"
+    correctAnswer: 1
+    explanation: "CI/CD pushes changes to production but does not monitor what happens afterward. GitOps uses a controller that continuously watches both the Git repository and the live system, correcting any drift caused by out-of-band changes, node failures, or configuration drift."
+  - text: "A team wants to run tests on Python 3.10, 3.11, and 3.12 across Ubuntu and Windows. Using a matrix strategy, how many parallel jobs will be created?"
+    options:
+      - "3"
+      - "5"
+      - "6"
+      - "2"
+    correctAnswer: 2
+    explanation: "A matrix strategy generates one job per combination. With 3 Python versions × 2 operating systems, the result is 3 × 2 = 6 parallel jobs. Each runs independently, providing comprehensive cross-environment coverage without duplicating job definitions."
+  - text: "What is the primary security advantage of using OIDC tokens instead of long-lived API keys in CI/CD pipelines?"
+    options:
+      - "OIDC tokens have higher permission levels than API keys"
+      - "OIDC tokens are short-lived and scoped to a specific workflow run, eliminating the risk of leaked long-lived credentials"
+      - "OIDC tokens are faster to validate than API keys"
+      - "OIDC is required by all major cloud providers"
+    correctAnswer: 1
+    explanation: "Long-lived API keys stored as secrets can be leaked through logs, misconfigured permissions, or third-party action compromises. OIDC tokens are issued per-run with a short TTL (typically 1 hour), scoped to the specific workflow, and cannot be reused. Even if a token leaks, it expires almost immediately."

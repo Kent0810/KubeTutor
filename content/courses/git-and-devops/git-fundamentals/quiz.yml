@@ -1,0 +1,34 @@
+title: "Git Fundamentals Quiz"
+questions:
+  - text: "What does `git fetch` do that `git pull` does not?"
+    options:
+      - "Downloads commits and immediately merges them"
+      - "Downloads remote changes without modifying your current working branch"
+      - "Creates a new branch from the remote"
+      - "Pushes your local commits to the remote"
+    correctAnswer: 1
+    explanation: "`git fetch` updates your remote-tracking refs without touching your checked-out branch. It lets you inspect remote changes before integrating them. `git pull` fetches and then immediately merges or rebases."
+  - text: "You want to combine your last 3 commits into one clean commit before pushing. Which command starts this process?"
+    options:
+      - "git merge --squash HEAD~3"
+      - "git rebase -i HEAD~3"
+      - "git commit --amend HEAD~3"
+      - "git reset HEAD~3 && git commit"
+    correctAnswer: 1
+    explanation: "`git rebase -i HEAD~3` opens an interactive rebase for the last 3 commits. You can then mark commits as `squash` or `fixup` to combine them into a single well-crafted commit."
+  - text: "What is the safest way to undo a commit that has already been pushed to a shared branch?"
+    options:
+      - "git reset --hard HEAD~1 followed by git push --force"
+      - "git revert HEAD to create a new commit that undoes the change"
+      - "Delete and recreate the branch from a known good state"
+      - "git checkout HEAD~1 and push the detached HEAD"
+    correctAnswer: 1
+    explanation: "`git revert` creates a new commit that inverts the changes from the target commit. This preserves the history and is safe for shared branches. Force-pushing rewrites history and will break collaborators' local copies."
+  - text: "In trunk-based development, how often should developers commit to the main branch?"
+    options:
+      - "Once per sprint after the sprint review"
+      - "Only after completing an entire feature"
+      - "At least once per day, using feature flags to hide incomplete work"
+      - "After passing a manual QA process"
+    correctAnswer: 2
+    explanation: "Trunk-based development requires frequent integration — ideally multiple times per day — to keep branches short-lived and avoid merge conflicts. Feature flags let you ship incomplete features safely."

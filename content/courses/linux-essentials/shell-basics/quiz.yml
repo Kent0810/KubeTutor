@@ -1,0 +1,42 @@
+title: "Shell Basics Quiz"
+questions:
+  - text: "Which directory stores system-wide configuration files on Linux?"
+    options:
+      - "/bin"
+      - "/etc"
+      - "/var"
+      - "/opt"
+    correctAnswer: 1
+    explanation: "/etc is the standard location for all system-wide configuration files, from /etc/nginx to /etc/hosts and /etc/passwd."
+  - text: "What does `chmod 600 ~/.ssh/id_rsa` achieve?"
+    options:
+      - "Makes the file executable by all users"
+      - "Sets owner read/write, no permissions for group or others"
+      - "Grants full access to the owner's group"
+      - "Removes all permissions from the file"
+    correctAnswer: 1
+    explanation: "600 = owner rw (6), group none (0), others none (0). SSH private keys must have this permission or SSH will refuse to use them."
+  - text: "Which command follows a log file in real time?"
+    options:
+      - "cat -f /var/log/app.log"
+      - "head -f /var/log/app.log"
+      - "tail -f /var/log/app.log"
+      - "less -f /var/log/app.log"
+    correctAnswer: 2
+    explanation: "`tail -f` streams new lines as they are appended to the file. This is the standard way to watch live logs."
+  - text: "What is the purpose of the sticky bit on the /tmp directory?"
+    options:
+      - "Prevents anyone from deleting files in /tmp"
+      - "Makes files in /tmp executable automatically"
+      - "Allows users to delete only their own files, not others'"
+      - "Copies files to RAM for faster access"
+    correctAnswer: 2
+    explanation: "The sticky bit on a shared directory means each user can only delete files they own, even if the directory is world-writable."
+  - text: "What does `find / -size +100M -type f` do?"
+    options:
+      - "Deletes all files larger than 100 MB"
+      - "Lists all regular files on the system larger than 100 MB"
+      - "Finds directories that use more than 100 MB of disk space"
+      - "Compresses files larger than 100 MB"
+    correctAnswer: 1
+    explanation: "`find` with `-size +100M` searches for files bigger than 100 megabytes. `-type f` restricts results to regular files only, excluding directories and symlinks."

@@ -25,6 +25,14 @@ const LEVELS: Record<string, { label: string; color: string }> = {
     label: "Intermediate → Advanced",
     color: "bg-amber-100 text-amber-800",
   },
+  "linux-essentials": {
+    label: "Beginner → Intermediate",
+    color: "bg-orange-100 text-orange-700",
+  },
+  "git-and-devops": {
+    label: "Beginner → Intermediate",
+    color: "bg-teal-100 text-teal-700",
+  },
 };
 
 export default function CoursesBrowser({ courses }: { courses: CourseCardData[] }) {
